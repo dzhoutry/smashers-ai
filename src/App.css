@@ -1,0 +1,100 @@
+/* V2 Header Layout */
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: 3rem;
+}
+
+/* Outer padding handled by #root in index.css */
+
+/* Header */
+.header {
+  margin-bottom: 60px;
+}
+
+/* ... */
+
+/* Main */
+/* No padding, direct grid access */
+
+/* Page Headers - if used */
+.page-header {
+  margin-bottom: var(--space-xl);
+}
+
+/* .page-title handled by global h1 */
+
+.header-content {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: var(--space-lg);
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  display: inline-block;
+}
+
+.logo {
+  font-family: var(--font-heading);
+  font-size: 4rem;
+  line-height: 0.8;
+  letter-spacing: -2px;
+  text-transform: uppercase;
+  color: var(--pigment-black);
+  margin: 0;
+}
+
+.nav {
+  display: flex;
+  gap: var(--space-md);
+  align-items: center;
+}
+
+.nav-link {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--pigment-black);
+  text-decoration: none;
+  padding: 8px 16px;
+  border: 2px solid transparent;
+  transition: all 0.2s;
+}
+
+.nav-link:hover {
+  background: var(--pigment-black);
+  color: var(--pigment-yellow);
+  transform: rotate(-2deg);
+}
+
+.nav-link.active {
+  background: var(--pigment-black);
+  color: var(--pigment-white);
+  transform: rotate(-2deg);
+  box-shadow: 4px 4px 0px var(--pigment-yellow);
+}
+
+
+
+.page-description {
+  font-size: var(--text-lg);
+  max-width: 600px;
+  margin-top: var(--space-md);
+  font-family: var(--font-body);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-content {
+    grid-template-columns: 1fr;
+  }
+
+  .logo {
+    font-size: 4rem;
+  }
+}

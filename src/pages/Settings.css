@@ -1,0 +1,58 @@
+.settings-page {
+    max-width: 600px;
+}
+
+.settings-section {
+    margin-bottom: var(--space-lg);
+}
+
+.api-key-field {
+    margin-bottom: var(--space-lg);
+}
+
+.input-row {
+    display: flex;
+    gap: var(--space-sm);
+}
+
+.api-key-actions {
+    display: flex;
+    gap: var(--space-sm);
+    flex-wrap: wrap;
+}
+
+.test-result {
+    margin-top: var(--space-md);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+}
+
+.test-result.success {
+    background-color: var(--color-accent-light);
+    color: var(--color-accent);
+}
+
+.test-result.error {
+    background-color: #fee2e2;
+    color: var(--color-error);
+}
+
+.about-content {
+    font-size: var(--text-sm);
+    color: var(--color-text-secondary);
+}
+
+.about-content p {
+    margin-bottom: var(--space-md);
+}
+
+.about-content p:last-child {
+    margin-bottom: 0;
+}
+
+.about-note {
+    padding: var(--space-sm) var(--space-md);
+    background-color: var(--color-bg-secondary);
+    border-radius: var(--radius-md);
+}

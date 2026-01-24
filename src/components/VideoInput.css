@@ -1,0 +1,217 @@
+/* V2 Video Input - Canvas Style */
+.video-input {
+    background: var(--pigment-black);
+    border: 4px solid var(--pigment-black);
+    box-shadow: var(--block-shadow);
+    padding: 0 !important;
+    /* Full bleed */
+    overflow: hidden;
+    margin-bottom: 30px;
+    position: relative;
+    transition: transform 0.3s;
+}
+
+.video-input:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--pigment-red);
+}
+
+.tabs {
+    display: flex;
+    width: 100%;
+    border-bottom: 4px solid var(--pigment-black);
+    background: var(--pigment-white);
+}
+
+.tab {
+    flex: 1;
+    border: none;
+    background: transparent;
+    padding: 15px;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    border-right: 4px solid var(--pigment-black);
+    color: var(--pigment-grey);
+}
+
+.tab:last-child {
+    border-right: none;
+}
+
+.tab.active {
+    background: var(--pigment-yellow);
+    color: var(--pigment-white);
+}
+
+.tab:hover:not(.active) {
+    background: #f0f0f0;
+}
+
+.upload-section {
+    min-height: 400px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 2px dashed var(--pigment-white);
+    /* Guides inside black */
+    margin: 20px;
+    color: var(--pigment-white);
+}
+
+.drop-zone {
+    text-align: center;
+    padding: 40px;
+}
+
+.drop-icon {
+    font-size: 4rem;
+    color: var(--pigment-yellow);
+    display: block;
+    margin-bottom: 20px;
+}
+
+.drop-text {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    color: var(--pigment-white);
+}
+
+.browse-link {
+    color: var(--pigment-yellow);
+    text-decoration: underline;
+}
+
+/* File Selected State */
+.file-selected {
+    background: var(--pigment-white);
+    color: var(--pigment-black);
+    padding: 20px;
+    margin: 20px;
+    border: 4px solid var(--pigment-black);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.file-name {
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+/* Video Player Preview (if loaded) */
+.video-preview {
+    width: 100%;
+    /* filter: grayscale(1) contrast(1.2); */
+    /* Optional effect from reference */
+}
+
+/* YouTube Input */
+.youtube-section {
+    background: var(--pigment-white);
+    padding: 32px;
+    border-top: 4px solid var(--pigment-black);
+}
+
+.youtube-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.youtube-icon-box {
+    background: #E81C23;
+    /* YouTube Red */
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 4px solid var(--pigment-black);
+}
+
+.youtube-title {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    margin: 0;
+    color: var(--pigment-black);
+}
+
+.helper-text-above {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+    color: var(--pigment-black);
+    letter-spacing: 0.5px;
+}
+
+.youtube-input-row {
+    margin-bottom: 24px;
+}
+
+.analyse-btn {
+    width: 100%;
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    padding: 16px;
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.1s;
+}
+
+.analyse-btn:hover:not(:disabled) {
+    transform: translate(4px, 4px);
+    background: var(--pigment-black);
+}
+
+.analyse-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.input-error {
+    background: var(--pigment-red);
+    color: var(--pigment-white);
+    padding: 10px;
+    font-family: var(--font-mono);
+    margin: 20px;
+}
+
+.file-input {
+    display: none;
+}
+
+/* Upload Tips */
+.upload-tips {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    padding: var(--space-md) var(--space-lg);
+    background: rgba(255, 255, 255, 0.05);
+    border-top: 2px dashed rgba(255, 255, 255, 0.15);
+}
+
+.tip {
+    font-family: var(--font-mono);
+    font-size: var(--text-xs);
+    color: rgba(255, 255, 255, 0.6);
+}
+
+@media (max-width: 600px) {
+    .upload-tips {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-sm);
+    }
+}

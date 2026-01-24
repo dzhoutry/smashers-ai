@@ -1,0 +1,265 @@
+/* V2 KINETIC SMASH - Analysis Results */
+
+.analysis-results {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Summary Section */
+.summary-section {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Overall Score */
+.overall-score-card {
+    background: var(--pigment-yellow);
+    border: 4px solid var(--pigment-black);
+    box-shadow: var(--block-shadow);
+    padding: 24px;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+.overall-score-card:hover {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--pigment-black);
+    /* stronger shadow */
+}
+
+.overall-label {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    font-weight: 700;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.overall-value {
+    font-family: var(--font-heading);
+    font-size: 5rem;
+    line-height: 1;
+    color: var(--pigment-black);
+}
+
+.overall-max {
+    font-size: 1.5rem;
+    vertical-align: super;
+    opacity: 0.5;
+}
+
+/* Confidence */
+.confidence-card {
+    background: var(--pigment-black);
+    border: 4px solid var(--pigment-black);
+    color: var(--pigment-white);
+    padding: 24px;
+    box-shadow: var(--block-shadow);
+}
+
+.confidence-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+}
+
+.confidence-badge {
+    color: var(--pigment-yellow);
+    font-weight: 700;
+}
+
+.confidence-badge.high {
+    color: var(--pigment-green);
+}
+
+.confidence-badge.medium {
+    color: var(--pigment-yellow);
+}
+
+.confidence-badge.low {
+    color: var(--pigment-red);
+}
+
+.confidence-reason {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    line-height: 1.4;
+    opacity: 0.8;
+}
+
+/* Tabs */
+.tabs {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    border-bottom: 4px solid var(--pigment-black);
+    padding-bottom: 10px;
+}
+
+.tab {
+    background: transparent;
+    border: none;
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    color: var(--pigment-black);
+    opacity: 0.5;
+    cursor: pointer;
+    text-transform: uppercase;
+}
+
+.tab:hover {
+    opacity: 1;
+}
+
+.tab.active {
+    opacity: 1;
+    text-decoration: underline;
+    text-decoration-thickness: 4px;
+    text-decoration-color: var(--pigment-yellow);
+}
+
+/* Metric Cards (Blocks) */
+.metric-card {
+    background: var(--pigment-white);
+    border: 4px solid var(--pigment-black);
+    padding: 24px;
+    box-shadow: var(--block-shadow);
+    margin-bottom: 30px;
+}
+
+.metric-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    border-bottom: 2px solid var(--pigment-black);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.metric-title {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    margin: 0;
+}
+
+/* Metric Sections */
+.metric-section {
+    margin-top: 20px;
+}
+
+.metric-section h5 {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    text-transform: uppercase;
+    color: var(--pigment-black);
+    margin-bottom: 10px;
+}
+
+.metric-section li {
+    font-family: var(--font-body);
+    /* Reading text */
+    font-weight: 600;
+    margin-bottom: 8px;
+    list-style: none;
+    position: relative;
+    padding-left: 16px;
+}
+
+.metric-section li::before {
+    content: "■";
+    color: var(--pigment-yellow);
+    font-size: 10px;
+    position: absolute;
+    left: 0;
+    top: 4px;
+}
+
+/* Score Bars */
+.score-display {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 50%;
+}
+
+.score-bar {
+    flex: 1;
+    height: 12px;
+    background: var(--pigment-black);
+    border: 2px solid var(--pigment-black);
+}
+
+.score-fill {
+    background: var(--pigment-white);
+    /* High contrast inside black */
+    height: 100%;
+}
+
+.score-value {
+    font-family: var(--font-mono);
+    font-weight: 700;
+}
+
+/* Strengths & Gaps */
+.strengths-section,
+.gaps-section {
+    background: var(--pigment-white);
+    border: 4px solid var(--pigment-black);
+    padding: 24px;
+    box-shadow: var(--block-shadow);
+}
+
+.strength-item {
+    background: var(--pigment-green);
+    color: white;
+    padding: 12px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    margin-bottom: 10px;
+    border: 2px solid var(--pigment-black);
+}
+
+.gap-item {
+    border: 2px solid var(--pigment-black);
+    padding: 12px;
+    margin-bottom: 10px;
+    background: #fff;
+}
+
+.gap-item.priority-high {
+    border-left: 8px solid var(--pigment-red);
+}
+
+.gap-item.priority-medium {
+    border-left: 8px solid var(--pigment-yellow);
+}
+
+/* Training Plan - Timeline */
+.timeline {
+    /* Mapped from Training Plan */
+}
+
+/* Drills */
+.drill-card {
+    border: 2px solid var(--pigment-black);
+    padding: 16px;
+    margin-bottom: 16px;
+    transition: transform 0.2s;
+}
+
+.drill-card:hover {
+    transform: translate(-4px, -4px);
+    background: var(--pigment-yellow);
+    box-shadow: 4px 4px 0px var(--pigment-black);
+}
+
+.drill-header h5 {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+}

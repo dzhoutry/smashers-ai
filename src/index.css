@@ -1,0 +1,264 @@
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Inter:wght@400;900&display=swap');
+
+:root {
+  /* PIGMENT THEME - Kinetic Smash */
+  --pigment-black: #0F0F11;
+  --pigment-white: #F4F4F1;
+  --pigment-yellow: #1D9533;
+  /* Renamed/Updated from Yellow to Green */
+  --pigment-red: #FF4D00;
+  --pigment-green: #1D9533;
+
+  /* Aliases for semantic usage */
+  --color-bg-primary: var(--pigment-white);
+  --color-bg-secondary: var(--pigment-black);
+  --color-bg-card: var(--pigment-white);
+  --color-text-primary: var(--pigment-black);
+  --color-text-invert: var(--pigment-white);
+  --color-text-muted: #52525b;
+  /* Neutral grey for non-critical */
+
+  --color-accent: var(--pigment-yellow);
+  --color-accent-secondary: var(--pigment-red);
+
+  --color-border: var(--pigment-black);
+
+  --color-error: var(--pigment-red);
+  --color-success: var(--pigment-green);
+  --color-warning: var(--pigment-yellow);
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+  --space-3xl: 5rem;
+
+  /* Typography */
+  --font-heading: 'Bebas Neue', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+  --text-3xl: 2.5rem;
+  --text-4xl: 4rem;
+
+  /* Effects */
+  --block-shadow: 8px 8px 0px rgba(0, 0, 0, 1);
+  --block-shadow-hover: 12px 12px 0px var(--pigment-red);
+  --radius-none: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+
+  --friction-grain: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  background-color: var(--color-bg-primary);
+  color: var(--color-text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* Texture Overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  opacity: 0.04;
+  z-index: 9999;
+  background-image: var(--friction-grain);
+}
+
+/* Polka Dot Background */
+body {
+  background-color: var(--color-bg-primary);
+  background-image: radial-gradient(#d4d4d4 1.5px, transparent 1.5px);
+  background-size: 24px 24px;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+}
+
+/* Typography Defaults */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-heading);
+  line-height: 0.9;
+  text-transform: uppercase;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-sm);
+}
+
+h1 {
+  font-size: 6rem;
+  letter-spacing: -2px;
+}
+
+h2 {
+  font-size: 3rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+p {
+  font-family: var(--font-body);
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-text-primary);
+}
+
+/* Buttons */
+.btn {
+  display: inline-block;
+  background: var(--pigment-black);
+  color: var(--pigment-white);
+  padding: 12px 24px;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translate(4px, 4px);
+  /* Press effect inverse? or move? Snippet uses translate(4px, 4px) for hover */
+  /* Snippet hover moves it down-right. */
+}
+
+.btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  /* Default black btn is primary in this theme */
+  background: var(--pigment-black);
+  color: var(--pigment-white);
+}
+
+.btn-secondary {
+  background: var(--pigment-white);
+  color: var(--pigment-black);
+  border: 4px solid var(--pigment-black);
+}
+
+.btn-secondary:hover {
+  background: var(--pigment-yellow);
+  color: var(--pigment-white);
+}
+
+/* Inputs */
+.input,
+.textarea,
+.select {
+  width: 100%;
+  padding: var(--space-md);
+  background: var(--pigment-white);
+  border: 4px solid var(--pigment-black);
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: var(--text-sm);
+  color: var(--pigment-black);
+  border-radius: 0;
+}
+
+.input:focus,
+.textarea:focus,
+.select:focus {
+  outline: none;
+  background: #fff;
+  box-shadow: 4px 4px 0px var(--pigment-yellow);
+}
+
+/* Cards */
+.card {
+  background: var(--pigment-white);
+  border: 4px solid var(--pigment-black);
+  padding: 24px;
+  box-shadow: var(--block-shadow);
+  position: relative;
+}
+
+.card-header {
+  margin-bottom: var(--space-lg);
+}
+
+/* Layout */
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 var(--space-md);
+}
+
+.page {
+  /* Grid layout from reference is handled in component CSS, but page wrapper */
+  margin-top: 40px;
+}
+
+/* Utility */
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Status Tag for Header (reference) */
+.status-tag {
+  font-family: var(--font-mono);
+  background: var(--pigment-black);
+  color: var(--pigment-yellow);
+  padding: 8px 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 14px;
+  transform: rotate(-2deg);
+  display: inline-block;
+}

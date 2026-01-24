@@ -1,0 +1,115 @@
+.step-progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-2xl);
+    padding: var(--space-lg) 0;
+}
+
+.step-item-wrapper {
+    display: flex;
+    align-items: center;
+}
+
+.step-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-md);
+    background: transparent;
+    border: 3px solid var(--color-text-muted);
+    transition: all 0.15s ease;
+}
+
+.step-indicator {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: 3px solid var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+}
+
+.step-label {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    letter-spacing: 0.5px;
+}
+
+/* Active State */
+.step-item.active {
+    background: var(--pigment-black);
+    border-color: var(--pigment-black);
+    box-shadow: 4px 4px 0px var(--pigment-yellow);
+}
+
+.step-item.active .step-indicator {
+    background: var(--pigment-yellow);
+    border-color: var(--pigment-yellow);
+    color: var(--pigment-white);
+}
+
+.step-item.active .step-label {
+    color: var(--pigment-white);
+}
+
+/* Completed State */
+.step-item.completed {
+    background: var(--pigment-yellow);
+    border-color: var(--pigment-yellow);
+}
+
+.step-item.completed .step-indicator {
+    background: var(--pigment-white);
+    border-color: var(--pigment-white);
+    color: var(--pigment-yellow);
+}
+
+.step-item.completed .step-label {
+    color: var(--pigment-white);
+}
+
+/* Connector Line */
+.step-connector {
+    width: 60px;
+    height: 3px;
+    background: var(--color-text-muted);
+    margin: 0 var(--space-xs);
+}
+
+.step-connector.completed {
+    background: var(--pigment-yellow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .step-progress-bar {
+        flex-wrap: wrap;
+        gap: var(--space-sm);
+    }
+
+    .step-connector {
+        display: none;
+    }
+
+    .step-item {
+        padding: var(--space-xs) var(--space-sm);
+    }
+
+    .step-label {
+        font-size: 1rem;
+    }
+
+    .step-indicator {
+        width: 24px;
+        height: 24px;
+        font-size: var(--text-xs);
+    }
+}
