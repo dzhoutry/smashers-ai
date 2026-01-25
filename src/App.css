@@ -10,6 +10,7 @@
 
 /* Header */
 .header {
+  padding-top: var(--space-xl);
   margin-bottom: 60px;
 }
 

@@ -76,15 +76,15 @@ function VideoInput({ onVideoSelect }) {
 
     return (
         <div className="video-input">
-            <div className="tabs">
+            <div className="video-input-tabs">
                 <button
-                    className={`tab ${activeTab === 'upload' ? 'active' : ''}`}
+                    className={`video-input-tab ${activeTab === 'upload' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('upload'); clearSelection(); }}
                 >
                     Upload File
                 </button>
                 <button
-                    className={`tab ${activeTab === 'youtube' ? 'active' : ''}`}
+                    className={`video-input-tab ${activeTab === 'youtube' ? 'active' : ''}`}
                     onClick={() => { setActiveTab('youtube'); clearSelection(); }}
                 >
                     YouTube URL

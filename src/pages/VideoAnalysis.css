@@ -156,6 +156,11 @@
     opacity: 0.7;
 }
 
+.model-toggle-btn.active:hover {
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+}
+
 .model-toggle-btn:disabled {
     opacity: 0.5;
     cursor: not-allowed;

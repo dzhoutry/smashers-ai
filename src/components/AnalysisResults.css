@@ -60,16 +60,23 @@
     margin-left: 10px;
     background: var(--pigment-white);
     color: var(--pigment-black);
-    /* Fix invisible text */
-    border: 2px solid var(--pigment-black);
+    border: 4px solid var(--pigment-black);
     font-family: var(--font-mono);
     font-weight: 700;
     text-transform: uppercase;
-    padding: 8px 16px;
+    padding: 12px 32px;
+    font-size: 1rem;
     cursor: pointer;
-    box-shadow: 2px 2px 0px var(--pigment-black);
-    /* Consistent shadow */
+    box-shadow: 4px 4px 0px var(--pigment-black);
     transition: transform 0.1s;
+    height: 3.5rem;
+    /* Match visual height of title */
+    display: flex;
+    align-items: center;
+}
+
+.btn-new-analysis:hover {
+    background: var(--pigment-yellow);
 }
 
 .btn-new-analysis:active {
@@ -178,17 +185,17 @@
 }
 
 .model-tag {
-    background: var(--pigment-black);
-    color: var(--pigment-white);
-    padding: 2px 6px;
+    background: var(--pigment-yellow);
+    color: var(--pigment-black);
+    padding: 4px 8px;
     font-family: var(--font-mono);
-    font-size: 0.7rem;
+    font-size: 0.8rem;
     font-weight: 700;
 }
 
 .model-tag.pro {
-    background: var(--pigment-black);
-    color: var(--pigment-yellow);
+    background: var(--pigment-yellow);
+    color: var(--pigment-black);
 }
 
 /* Highlight PRO */
@@ -355,19 +362,29 @@
 }
 
 .timestamp-btn {
-    background: #eee;
-    border: 1px solid #ccc;
-    padding: 2px 6px;
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    border: 2px solid var(--pigment-black);
+    padding: 4px 8px;
     font-size: 0.75rem;
-    border-radius: 4px;
     font-family: var(--font-mono);
+    font-weight: 700;
     cursor: pointer;
-    margin-left: 4px;
+    margin-left: 6px;
+    transition: all 0.2s ease;
+    text-transform: uppercase;
 }
 
 .timestamp-btn:hover {
-    background: #ddd;
-    border-color: #999;
+    background: var(--pigment-yellow);
+    color: var(--pigment-black);
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--pigment-red);
+}
+
+.timestamp-btn:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0px var(--pigment-red);
 }
 
 
@@ -384,22 +401,23 @@
 }
 
 .score-segment {
-    width: 12px;
-    height: 20px;
+    width: 40px;
+    height: 28px;
     background: #eee;
     transform: skew(-15deg);
-    border: 1px solid #ccc;
+    border: 2px solid var(--pigment-black);
 }
 
 .score-segment.filled {
     background: var(--score-color, var(--pigment-green));
-    border-color: transparent;
+    border: 2px solid var(--pigment-black);
 }
 
 .score-value {
     font-family: var(--font-heading);
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 2rem;
+    font-style: italic;
 }
 
 .progress-notes {

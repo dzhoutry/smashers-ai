@@ -2,6 +2,8 @@ import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 're
 
 const VideoPlayer = forwardRef(({ videoSource }, ref) => {
     const videoRef = useRef(null);
+    const iframeRef = useRef(null);
+    const ytPlayerRef = useRef(null);
     const [videoUrl, setVideoUrl] = useState(null);
 
     // Expose seekTo method
@@ -11,12 +13,14 @@ const VideoPlayer = forwardRef(({ videoSource }, ref) => {
                 videoRef.current.currentTime = seconds;
                 videoRef.current.play();
             } else if (videoSource.type === 'youtube') {
-                // For YouTube, we need to reload the iframe with ?start=
-                // Or use the Iframe API. For simplicity and robustness without external libs,
-                // we'll just update the src to auto-play at that time.
-                // A better approach would be the full YouTube Player API, but this is lighter.
-                const baseUrl = `https://www.youtube.com/embed/${videoSource.videoId}?autoplay=1&start=${Math.floor(seconds)}`;
-                setVideoUrl(baseUrl);
+                if (ytPlayerRef.current && typeof ytPlayerRef.current.seekTo === 'function') {
+                    ytPlayerRef.current.seekTo(seconds, true);
+                    ytPlayerRef.current.playVideo();
+                } else {
+                    // Fallback to reloading if API isn't ready
+                    const baseUrl = `https://www.youtube.com/embed/${videoSource.videoId}?autoplay=1&enablejsapi=1&start=${Math.floor(seconds)}`;
+                    setVideoUrl(baseUrl);
+                }
             }
         }
     }));
@@ -29,7 +33,33 @@ const VideoPlayer = forwardRef(({ videoSource }, ref) => {
             setVideoUrl(url);
             return () => URL.revokeObjectURL(url);
         } else if (videoSource.type === 'youtube') {
-            setVideoUrl(`https://www.youtube.com/embed/${videoSource.videoId}`);
+            setVideoUrl(`https://www.youtube.com/embed/${videoSource.videoId}?enablejsapi=1`);
+
+            // Initialize YouTube API if it's not already loaded
+            if (!window.YT) {
+                const tag = document.createElement('script');
+                tag.src = "https://www.youtube.com/iframe_api";
+                const firstScriptTag = document.getElementsByTagName('script')[0];
+                firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+            }
+
+            const initPlayer = () => {
+                if (window.YT && window.YT.Player && iframeRef.current) {
+                    ytPlayerRef.current = new window.YT.Player(iframeRef.current, {
+                        events: {
+                            'onReady': (event) => {
+                                console.log('YT Player Ready');
+                            }
+                        }
+                    });
+                }
+            };
+
+            if (window.YT && window.YT.Player) {
+                initPlayer();
+            } else {
+                window.onYouTubeIframeAPIReady = initPlayer;
+            }
         }
     }, [videoSource]);
 
@@ -53,6 +83,7 @@ const VideoPlayer = forwardRef(({ videoSource }, ref) => {
         return (
             <div className="video-player-container" style={{ width: '100%', aspectRatio: '16/9' }}>
                 <iframe
+                    ref={iframeRef}
                     width="100%"
                     height="100%"
                     src={videoUrl}

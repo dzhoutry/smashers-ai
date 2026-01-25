@@ -1,5 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
 import VideoInput from '../components/VideoInput';
+import VideoPlayer from '../components/VideoPlayer';
 import VideoTrimmer from '../components/VideoTrimmer';
 import PlayerDescription from '../components/PlayerDescription';
 import AnalysisResults from '../components/AnalysisResults';
@@ -25,6 +26,7 @@ function VideoAnalysis({ apiKey }) {
 
     // Playback state
     const videoPlayerRef = useRef(null);
+    const playerContainerRef = useRef(null);
 
     // Analysis state
     const [isAnalyzing, setIsAnalyzing] = useState(false);
@@ -68,10 +70,13 @@ function VideoAnalysis({ apiKey }) {
 
     // Handle deep linking
     const handleTimestampClick = (seconds) => {
+        // Seek video
         if (videoPlayerRef.current) {
             videoPlayerRef.current.seekTo(seconds);
-            // Scroll to player
-            videoPlayerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+        // Scroll to player
+        if (playerContainerRef.current) {
+            playerContainerRef.current.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     };
 
@@ -267,7 +272,7 @@ function VideoAnalysis({ apiKey }) {
                                 ← Change Video
                             </button>
                         </div>
-                        <div className="player-wrapper" ref={videoPlayerRef}>
+                        <div className="player-wrapper" ref={playerContainerRef}>
                             <VideoPlayer ref={videoPlayerRef} videoSource={videoSource} />
                         </div>
                     </div>
@@ -287,6 +292,8 @@ function VideoAnalysis({ apiKey }) {
                             onTimestampClick={handleTimestampClick}
                             modelId={selectedModel}
                             onNewAnalysis={handleChangeVideo}
+                            videoPlayerRef={videoPlayerRef}
+                            playerContainerRef={playerContainerRef}
                         />
                     </div>
                 </div>

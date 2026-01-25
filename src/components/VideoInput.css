@@ -16,14 +16,15 @@
     box-shadow: 12px 12px 0px var(--pigment-red);
 }
 
-.tabs {
-    display: flex;
+.video-input-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
     width: 100%;
     border-bottom: 4px solid var(--pigment-black);
     background: var(--pigment-white);
 }
 
-.tab {
+.video-input-tab {
     flex: 1;
     border: none;
     background: transparent;
@@ -37,16 +38,16 @@
     color: var(--pigment-grey);
 }
 
-.tab:last-child {
+.video-input-tab:last-child {
     border-right: none;
 }
 
-.tab.active {
+.video-input-tab.active {
     background: var(--pigment-yellow);
     color: var(--pigment-white);
 }
 
-.tab:hover:not(.active) {
+.video-input-tab:hover:not(.active) {
     background: #f0f0f0;
 }
 

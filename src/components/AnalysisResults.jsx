@@ -4,7 +4,15 @@ import VideoPlayer from './VideoPlayer';
 import KeyFrameExtractor from './KeyFrameExtractor';
 import './AnalysisResults.css';
 
-function AnalysisResults({ analysis, videoSource, onTimestampClick, modelId, onNewAnalysis }) {
+function AnalysisResults({
+    analysis,
+    videoSource,
+    onTimestampClick,
+    modelId,
+    onNewAnalysis,
+    videoPlayerRef,
+    playerContainerRef
+}) {
     const [activeTab, setActiveTab] = useState('technical');
 
     if (!analysis) return null;
@@ -16,21 +24,40 @@ function AnalysisResults({ analysis, videoSource, onTimestampClick, modelId, onN
 
     const renderTextWithTimestamps = (text) => {
         if (!text) return null;
-        const parts = text.split(/(\[\d{1,2}:\d{2}\])/g);
-        return parts.map((part, i) => {
-            if (/^\[\d{1,2}:\d{2}\]$/.test(part)) {
-                return (
-                    <button
-                        key={i}
-                        className="timestamp-btn"
-                        onClick={() => onTimestampClick && onTimestampClick(parseTimestamp(part))}
-                    >
-                        {part}
-                    </button>
-                );
-            }
-            return part;
-        });
+
+        // Extract all timestamps
+        const timestampRegex = /\[(\d{1,2}:\d{2})\]/g;
+        const timestamps = [];
+        let match;
+
+        while ((match = timestampRegex.exec(text)) !== null) {
+            timestamps.push(match[0]);
+        }
+
+        // Remove timestamps and clean up punctuation
+        let cleanText = text.replace(/\[(\d{1,2}:\d{2})\]/g, '').trim();
+        // Remove trailing periods or other punctuation that might be left
+        cleanText = cleanText.replace(/\.\s*$/, '');
+
+        return (
+            <>
+                {cleanText}
+                {timestamps.length > 0 && (
+                    <>
+                        {' '}
+                        {timestamps.map((ts, i) => (
+                            <button
+                                key={i}
+                                className="timestamp-btn"
+                                onClick={() => onTimestampClick && onTimestampClick(parseTimestamp(ts))}
+                            >
+                                {ts}
+                            </button>
+                        ))}
+                    </>
+                )}
+            </>
+        );
     };
 
     const renderScore = (score) => {
@@ -133,9 +160,6 @@ function AnalysisResults({ analysis, videoSource, onTimestampClick, modelId, onN
             <div className="results-header-bar">
                 <div className="header-left">
                     <h2 className="results-title">ANALYSIS RESULTS</h2>
-                    <div className="video-meta">
-                        Video ID: #{videoSource?.videoId || 'LOCAL'} • Duration: {videoSource?.file ? 'Local File' : 'YouTube'}
-                    </div>
                 </div>
                 <div className="header-actions">
                     {onNewAnalysis && (
@@ -196,8 +220,8 @@ function AnalysisResults({ analysis, videoSource, onTimestampClick, modelId, onN
             {/* Video Section - Prominent */}
             <div className="result-video-section">
                 {videoSource && (
-                    <div className="video-main-wrapper">
-                        <VideoPlayer videoSource={videoSource} />
+                    <div className="video-main-wrapper" ref={playerContainerRef}>
+                        <VideoPlayer ref={videoPlayerRef} videoSource={videoSource} />
                     </div>
                 )}
             </div>
