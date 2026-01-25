@@ -12,7 +12,7 @@ export async function fetchYouTubeMetadata(videoId, apiKey) {
     if (!apiKey) throw new Error('API key is required');
 
     const response = await fetch(
-        `https://www.googleapis.com/youtube/v3/videos?part=contentDetails&id=${videoId}&key=${apiKey}`
+        `https://www.googleapis.com/youtube/v3/videos?part=snippet,contentDetails&id=${videoId}&key=${apiKey}`
     );
 
     if (!response.ok) {
@@ -25,10 +25,15 @@ export async function fetchYouTubeMetadata(videoId, apiKey) {
         throw new Error('YouTube video not found');
     }
 
-    const isoDuration = data.items[0].contentDetails.duration;
+    const video = data.items[0];
+    const isoDuration = video.contentDetails.duration;
     const durationSeconds = parseISO8601Duration(isoDuration);
+    const title = video.snippet.title;
 
-    return { duration: durationSeconds };
+    return {
+        duration: durationSeconds,
+        title: title
+    };
 }
 
 /**

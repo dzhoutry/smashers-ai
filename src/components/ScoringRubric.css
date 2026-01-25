@@ -1,0 +1,239 @@
+.rubric-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 3000;
+    padding: 1.5rem;
+    animation: fadeIn 0.2s ease;
+}
+
+.rubric-modal {
+    background: var(--pigment-white);
+    width: 100%;
+    max-width: 1100px;
+    max-height: 90vh;
+    border: 4px solid var(--pigment-black);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 20px 20px 0px rgba(0, 0, 0, 0.4);
+}
+
+.rubric-header {
+    padding: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+.rubric-title {
+    font-family: var(--font-heading);
+    font-size: 3.5rem;
+    margin: 0;
+    line-height: 1;
+    color: var(--pigment-black);
+}
+
+.close-btn-square {
+    background: var(--pigment-green);
+    border: 2px solid var(--pigment-black);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 2rem;
+    font-weight: 900;
+    color: var(--pigment-black);
+    transition: transform 0.1s;
+}
+
+.close-btn-square:hover {
+    transform: translate(2px, 2px);
+    box-shadow: 2px 2px 0px var(--pigment-black);
+}
+
+.rubric-content {
+    padding: 0 2rem 2rem 2rem;
+    overflow-y: auto;
+}
+
+.rubric-intro {
+    margin-bottom: 2rem;
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+}
+
+.intro-line {
+    width: 4px;
+    background: var(--pigment-green);
+    height: 60px;
+    flex-shrink: 0;
+}
+
+.rubric-intro p {
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    line-height: 1.5;
+    color: #333;
+    font-weight: 500;
+    max-width: 800px;
+}
+
+.weight-tag {
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    padding: 2px 6px;
+    font-weight: 700;
+    display: inline-block;
+    margin: 0 2px;
+}
+
+.rubric-table-wrapper {
+    border: 3px solid var(--pigment-black);
+}
+
+.rubric-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+.rubric-table th {
+    padding: 1rem;
+    border: 3px solid var(--pigment-black);
+    background: var(--pigment-white);
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    text-align: left;
+    letter-spacing: 0.05em;
+    color: var(--pigment-black);
+}
+
+.rubric-table td {
+    padding: 1.25rem 1rem;
+    border: 3px solid var(--pigment-black);
+    vertical-align: top;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.4;
+    font-weight: 500;
+}
+
+.score-cell {
+    color: var(--pigment-green) !important;
+    font-size: 2rem !important;
+    font-family: var(--font-heading) !important;
+    text-align: center;
+    width: 100px;
+    /* Adjusted to 100px */
+}
+
+.tier-cell {
+    width: 130px;
+    /* Adjusted to 130px */
+    text-align: center;
+    vertical-align: middle !important;
+}
+
+.desc-cell {
+    color: #444;
+    width: calc((100% - 230px) / 3);
+    /* Equally distribute remaining space (100+130=230) */
+}
+
+.tier-pill {
+    padding: 0.5rem;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    text-transform: uppercase;
+    border-width: 2px;
+    border-style: solid;
+    display: inline-block;
+    min-width: 100px;
+}
+
+.tier-pill.beginner {
+    background: rgba(255, 77, 0, 0.05);
+    color: #FF4D00;
+    border-color: #FF4D00;
+}
+
+.tier-pill.novice {
+    background: rgba(255, 122, 0, 0.05);
+    color: #FF7A00;
+    border-color: #FF7A00;
+}
+
+.tier-pill.intermediate {
+    background: rgba(29, 149, 51, 0.05);
+    color: #1D9533;
+    border-color: #1D9533;
+}
+
+.tier-pill.advanced {
+    background: rgba(59, 130, 246, 0.05);
+    color: #3b82f6;
+    border-color: #3b82f6;
+}
+
+.tier-pill.professional {
+    background: rgba(139, 92, 246, 0.05);
+    color: #8b5cf6;
+    border-color: #8b5cf6;
+}
+
+.desc-cell {
+    color: #444;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@media (max-width: 900px) {
+    .rubric-title {
+        font-size: 2rem;
+    }
+
+    .rubric-table th {
+        font-size: 1rem;
+        padding: 0.5rem;
+    }
+
+    .rubric-table td {
+        padding: 0.75rem 0.5rem;
+        font-size: 0.75rem;
+    }
+
+    .score-cell {
+        font-size: 1.5rem !important;
+        width: 60px;
+    }
+
+    .tier-cell {
+        width: 100px;
+    }
+
+    .tier-pill {
+        min-width: 80px;
+        font-size: 0.6rem;
+    }
+}

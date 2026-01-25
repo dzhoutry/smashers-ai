@@ -93,8 +93,20 @@ Analyse the identified player's performance across these 3 pillars and their sub
 - **Mobility:** reach flexibility, deep lunge capacity, overhead range of motion.
 - **Anthropometrics:** utilization of height/reach or compensation for lack thereof.
 
-## Response Format
-Respond in valid JSON format with this strict structure.
+## Scoring Rubric (1-10 Scale)
+Calibrate your scores based on these tiers for Technical, Tactical, and Physicality pillars:
+
+- **1-2 (Beginner)**: Basic grip/hit. Often misses shuttle. No real strategy. Low stamina.
+- **3-4 (Novice)**: Consistent clears/serves. Basic drops. Can sustain short rallies. Moderate court coverage.
+- **5-6 (Intermediate)**: Reliable mechanics. Developing net play/smashes. Intentional shot placement. Good footwork efficiency.
+- **7-8 (Advanced)**: Strong power/precision. High-quality deception. Exploits opponent weaknesses. Explosive first step.
+- **9-10 (Professional)**: International level precision. Flawless footwork. Master of rally construction. Elite athleticism.
+
+## Overall Score Calculation
+Calculate the \`overallScore\` using this weighted formula:
+\`Overall = (TechnicalAverage * 0.4) + (TacticalAverage * 0.4) + (PhysicalityAverage * 0.2)\`
+- The final \`overallScore\` MUST be a number with up to **1 decimal point** (e.g., 7.4).
+- You may adjust this by +/- 0.5 if you feel a specific trait disproportionately affects the player's level.
 
 **CRITICAL: BALANCED ANALYSIS**
 For EACH sub-category (e.g., "Racket Skills"), you MUST provide:
@@ -110,7 +122,7 @@ For EACH sub-category (e.g., "Racket Skills"), you MUST provide:
 2.  **Successes/Improvements**: Timestamps are allowed but NOT required.
 
 {
-  "overallScore": <number 1-10>,
+  "overallScore": <number 1.0-10.0 (1 decimal)>,
   "confidence": {
     "score": "High" | "Medium" | "Low",
     "reason": "Brief explanation"

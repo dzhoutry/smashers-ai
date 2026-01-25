@@ -102,9 +102,31 @@ function History({ apiKey }) {
                                     </button>
                                 </div>
                                 <div className="history-card-body">
+                                    <div className="player-name-title">
+                                        {analysis.playerName || 'Unknown Player'}
+                                    </div>
                                     <div className="video-source">
-                                        {analysis.videoSource?.type === 'youtube' ? '📺' : '📁'}{' '}
-                                        {analysis.videoSource?.fileName || analysis.videoSource?.videoId || 'Video'}
+                                        {analysis.videoSource?.type === 'youtube' ? (
+                                            <a
+                                                href={`https://youtube.com/watch?v=${analysis.videoSource.videoId}`}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                onClick={(e) => e.stopPropagation()}
+                                                className="video-link"
+                                                style={{ display: 'flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}
+                                            >
+                                                <div className="youtube-icon-mini">
+                                                    <svg width="12" height="12" viewBox="0 0 24 24" fill="white">
+                                                        <path d="M8 5v14l11-7z" />
+                                                    </svg>
+                                                </div>
+                                                <span style={{ textDecoration: 'underline' }}>
+                                                    {analysis.videoSource?.videoTitle || analysis.videoSource?.videoId}
+                                                </span>
+                                            </a>
+                                        ) : (
+                                            <>📁 {analysis.videoSource?.fileName || 'Local Video'}</>
+                                        )}
                                     </div>
                                     <p className="player-desc">{analysis.playerDescription}</p>
                                     {analysis.analysis?.overallScore && (
@@ -133,6 +155,7 @@ function History({ apiKey }) {
                             <AnalysisResults
                                 analysis={selectedAnalysis.analysis}
                                 modelId={selectedAnalysis.modelId}
+                                playerName={selectedAnalysis.playerName}
                             />
                         </div>
                     )}

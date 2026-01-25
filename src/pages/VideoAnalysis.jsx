@@ -61,6 +61,8 @@ function VideoAnalysis({ apiKey }) {
                 const metadata = await fetchYouTubeMetadata(source.videoId, apiKey);
                 setVideoDuration(metadata.duration);
                 setEndTime(metadata.duration);
+                // Store title for history
+                setVideoSource(prev => ({ ...prev, title: metadata.title }));
             } catch (e) {
                 console.error('Failed to get YouTube metadata:', e);
                 setError('Failed to load YouTube video info. Make sure the video is public.');
@@ -152,7 +154,8 @@ function VideoAnalysis({ apiKey }) {
                 videoSource: {
                     type: videoSource.type,
                     videoId: videoSource.videoId,
-                    fileName: videoSource.file?.name
+                    fileName: videoSource.file?.name,
+                    videoTitle: videoSource.title
                 },
                 playerDescription,
                 playerName,
@@ -294,6 +297,7 @@ function VideoAnalysis({ apiKey }) {
                             onNewAnalysis={handleChangeVideo}
                             videoPlayerRef={videoPlayerRef}
                             playerContainerRef={playerContainerRef}
+                            playerName={playerName}
                         />
                     </div>
                 </div>

@@ -2,6 +2,8 @@ import { useState } from 'react';
 import VideoInput from './VideoInput'; // Not used here? Ah, maybe wait. No, we need VideoPlayer.
 import VideoPlayer from './VideoPlayer';
 import KeyFrameExtractor from './KeyFrameExtractor';
+import ScoringRubric from './ScoringRubric';
+import { Info } from 'lucide-react';
 import './AnalysisResults.css';
 
 function AnalysisResults({
@@ -11,9 +13,11 @@ function AnalysisResults({
     modelId,
     onNewAnalysis,
     videoPlayerRef,
-    playerContainerRef
+    playerContainerRef,
+    playerName
 }) {
     const [activeTab, setActiveTab] = useState('technical');
+    const [showRubric, setShowRubric] = useState(false);
 
     if (!analysis) return null;
 
@@ -100,7 +104,16 @@ function AnalysisResults({
                 {subCategories.map(([key, data]) => (
                     <div key={key} className="sub-category-block">
                         <div className="sub-category-header">
-                            <h3 className="sub-category-title">{formatTitle(key)}</h3>
+                            <h3 className="sub-category-title">
+                                {formatTitle(key)}
+                                <button
+                                    className="info-btn-inline"
+                                    onClick={() => setShowRubric(true)}
+                                    title="View scoring rubric"
+                                >
+                                    <Info size={12} />
+                                </button>
+                            </h3>
                             {renderScore(data.score)}
                         </div>
 
@@ -159,7 +172,9 @@ function AnalysisResults({
             {/* Header with Title and New Analysis Button */}
             <div className="results-header-bar">
                 <div className="header-left">
-                    <h2 className="results-title">ANALYSIS RESULTS</h2>
+                    <h2 className="results-title">
+                        PLAYER: <span className="player-highlight">{playerName || 'UNKNOWN'}</span>
+                    </h2>
                 </div>
                 <div className="header-actions">
                     {onNewAnalysis && (
@@ -173,7 +188,16 @@ function AnalysisResults({
             <div className="summary-section sticky-header">
                 {/* Overall Score */}
                 <div className="summary-card overall-score-card">
-                    <div className="card-label">Overall Score</div>
+                    <div className="card-label">
+                        Overall Score
+                        <button
+                            className="info-btn"
+                            onClick={() => setShowRubric(true)}
+                            title="View scoring rubric"
+                        >
+                            <Info size={14} />
+                        </button>
+                    </div>
                     <div className="score-display-large">
                         <span className="score-number">{analysis.overallScore}</span>
                         <span className="score-max">/10</span>
@@ -279,6 +303,9 @@ function AnalysisResults({
                     <p>{renderTextWithTimestamps(analysis.progressNotes)}</p>
                 </div>
             )}
+
+            {/* Scoring Rubric Modal */}
+            {showRubric && <ScoringRubric onClose={() => setShowRubric(false)} />}
         </div>
     );
 }
