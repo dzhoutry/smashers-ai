@@ -12,21 +12,22 @@ function History({ apiKey }) {
         loadHistory();
     }, []);
 
-    const loadHistory = () => {
-        setAnalyses(getAnalysisHistory());
+    const loadHistory = async () => {
+        const history = await getAnalysisHistory();
+        setAnalyses(history);
     };
 
-    const handleDelete = (id) => {
-        deleteAnalysis(id);
-        loadHistory();
+    const handleDelete = async (id) => {
+        await deleteAnalysis(id);
+        await loadHistory();
         if (selectedAnalysis?.id === id) {
             setSelectedAnalysis(null);
         }
     };
 
-    const handleClear = () => {
-        clearHistory();
-        loadHistory();
+    const handleClear = async () => {
+        await clearHistory();
+        await loadHistory();
         setSelectedAnalysis(null);
         setShowClearConfirm(false);
     };

@@ -134,7 +134,7 @@ function VideoAnalysis({ apiKey }) {
             setAnalysisProgress('Preparing analysis...');
 
             // Get previous analyses for context
-            const previousAnalyses = getAnalysisSummaries(3);
+            const previousAnalyses = await getAnalysisSummaries(3);
 
             const result = await analyzeVideo({
                 apiKey,
@@ -150,7 +150,7 @@ function VideoAnalysis({ apiKey }) {
             setAnalysisResult(result);
 
             // Save to history
-            saveAnalysis({
+            await saveAnalysis({
                 videoSource: {
                     type: videoSource.type,
                     videoId: videoSource.videoId,

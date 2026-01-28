@@ -7,7 +7,13 @@ import './Settings.css';
 
 function Settings({ apiKey, setApiKey }) {
     const [activeTab, setActiveTab] = useState('account');
-    const [profile, setProfile] = useState(getUserProfile());
+    const [profile, setProfile] = useState({
+        displayName: 'Guest Player',
+        email: '',
+        bio: '',
+        preferences: { darkMode: false, publicProfile: false },
+        plan: { tier: 'Free Tier' }
+    });
     const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
     // API Key State
@@ -20,22 +26,26 @@ function Settings({ apiKey, setApiKey }) {
         setApiInputValue(apiKey);
     }, [apiKey]);
 
-    const handleProfileUpdate = (field, value) => {
+    useEffect(() => {
+        getUserProfile().then(setProfile);
+    }, []);
+
+    const handleProfileUpdate = async (field, value) => {
         // Handle nested updates for preferences
+        let updated;
         if (field.startsWith('preferences.')) {
             const prefKey = field.split('.')[1];
-            const updated = updateUserProfile({
+            updated = await updateUserProfile({
                 preferences: { ...profile.preferences, [prefKey]: value }
             });
-            setProfile(updated);
         } else {
-            const updated = updateUserProfile({ [field]: value });
-            setProfile(updated);
+            updated = await updateUserProfile({ [field]: value });
         }
+        setProfile(updated);
     };
 
-    const handleAvatarSelect = (data) => {
-        const updated = updateUserProfile(data);
+    const handleAvatarSelect = async (data) => {
+        const updated = await updateUserProfile(data);
         setProfile(updated);
         setIsAvatarModalOpen(false);
     };
@@ -64,8 +74,8 @@ function Settings({ apiKey, setApiKey }) {
         localStorage.removeItem('gemini_api_key');
     };
 
-    const handleExportHistory = () => {
-        const data = exportHistory();
+    const handleExportHistory = async () => {
+        const data = await exportHistory();
         const blob = new Blob([data], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
@@ -77,9 +87,9 @@ function Settings({ apiKey, setApiKey }) {
         URL.revokeObjectURL(url);
     };
 
-    const handleClearHistory = () => {
+    const handleClearHistory = async () => {
         if (window.confirm('Are you sure you want to delete all analysis history? This cannot be undone.')) {
-            clearHistory();
+            await clearHistory();
             alert('History cleared.');
         }
     };

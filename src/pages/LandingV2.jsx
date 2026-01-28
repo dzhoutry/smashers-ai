@@ -1,10 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import './LandingV2.css'
 import AuthModal from '../components/AuthModal'
 
-function LandingV2() {
+function LandingV2({ session }) {
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (session) {
+            navigate('/')
+        }
+    }, [session, navigate])
 
     return (
         <div className="landing-v2">
