@@ -1,0 +1,441 @@
+/* ===== LANDING V2 LAYOUT ===== */
+.landing-v2 {
+    display: flex;
+    flex-direction: row;
+    min-height: 100vh;
+    width: 100%;
+    background: var(--pigment-white);
+    overflow: hidden;
+}
+
+/* ===== LEFT SIDEBAR ===== */
+.landing-v2-sidebar {
+    width: 50%;
+    min-height: 100vh;
+    background: var(--pigment-black);
+    border-right: 4px solid var(--pigment-black);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: 0.15;
+    background-image: radial-gradient(#ffffff 1px, transparent 1px);
+    background-size: 20px 20px;
+}
+
+.sidebar-logo-container {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+    transform: rotate(180deg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    cursor: default;
+    user-select: none;
+    transition: color 0.5s;
+    color: var(--pigment-white);
+}
+
+.sidebar-logo-container:hover {
+    color: var(--pigment-green);
+}
+
+.sidebar-logo-main {
+    font-family: var(--font-heading);
+    font-size: 12.6vw;
+    line-height: 0.9;
+    letter-spacing: -4px;
+    text-transform: uppercase;
+}
+
+.sidebar-logo-suffix {
+    font-family: var(--font-mono);
+    font-size: 4vw;
+    font-weight: 700;
+    letter-spacing: 2px;
+    margin-top: 16px;
+    opacity: 0.8;
+}
+
+.sidebar-status {
+    position: absolute;
+    bottom: 32px;
+    left: 32px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--pigment-green);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    z-index: 20;
+}
+
+/* ===== RIGHT CONTENT ===== */
+.landing-v2-content {
+    width: 50%;
+    min-height: 100vh;
+    background: var(--pigment-white);
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow-y: auto;
+}
+
+/* Navigation */
+.landing-v2-nav {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 32px 40px;
+    gap: 32px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.nav-link {
+    color: var(--pigment-black);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.nav-link:hover {
+    color: var(--pigment-green);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+    text-decoration-thickness: 3px;
+}
+
+.login-btn {
+    border: 2px solid var(--pigment-black);
+    padding: 8px 16px;
+    box-shadow: 4px 4px 0px var(--pigment-black);
+    transition: all 0.2s;
+}
+
+.login-btn:hover {
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    box-shadow: none;
+    transform: translate(2px, 2px);
+    text-decoration: none;
+}
+
+/* Hero Section */
+.landing-v2-hero {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 40px 64px;
+}
+
+.hero-container {
+    width: 100%;
+    max-width: 480px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.hero-badge {
+    display: inline-block;
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    padding: 6px 12px;
+    margin-bottom: 16px;
+    transform: rotate(-1deg);
+}
+
+.hero-headline {
+    font-family: var(--font-heading);
+    font-size: 6rem;
+    line-height: 0.9;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--pigment-black);
+    margin-bottom: 40px;
+    text-align: left;
+}
+
+.hero-accent {
+    color: var(--pigment-black);
+    font-style: normal;
+    transition: all 0.3s ease;
+    cursor: default;
+}
+
+.hero-accent:hover {
+    color: var(--pigment-green);
+    text-shadow: 4px 4px 0px var(--pigment-black);
+}
+
+/* Auth Section */
+.auth-section {
+    width: 100%;
+}
+
+.auth-section .auth-modal-content.inline {
+    background: transparent;
+}
+
+.auth-section .auth-modal-header {
+    display: none;
+    /* Hide the header in V2 design */
+}
+
+.auth-section .auth-tabs {
+    margin-bottom: 16px;
+}
+
+.auth-section .auth-modal-body {
+    padding: 0;
+}
+
+.auth-section .hero-badges {
+    margin-top: 24px;
+}
+
+.input-wrapper {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.input-shadow {
+    position: absolute;
+    inset: 0;
+    background: var(--pigment-black);
+    transform: translate(8px, 8px);
+    transition: transform 0.2s;
+}
+
+.input-wrapper:hover .input-shadow,
+.input-wrapper:focus-within .input-shadow {
+    transform: translate(4px, 4px);
+}
+
+.url-input {
+    position: relative;
+    width: 100%;
+    background: var(--pigment-white);
+    border: 4px solid var(--pigment-black);
+    padding: 16px 20px;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--pigment-black);
+    z-index: 10;
+}
+
+.url-input:focus {
+    outline: none;
+}
+
+.url-input::placeholder {
+    color: #9ca3af;
+}
+
+/* Start Button */
+.start-btn {
+    position: relative;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+    margin-bottom: 32px;
+}
+
+.btn-shadow {
+    position: absolute;
+    inset: 0;
+    background: var(--pigment-black);
+    transform: translate(8px, 8px);
+    transition: transform 0.2s;
+}
+
+.start-btn:hover .btn-shadow {
+    transform: translate(12px, 12px);
+}
+
+.start-btn:active .btn-shadow {
+    transform: translate(4px, 4px);
+}
+
+.btn-content {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--pigment-green);
+    border: 4px solid var(--pigment-black);
+    padding: 16px 20px;
+    z-index: 10;
+    transition: all 0.2s;
+}
+
+.start-btn:active .btn-content {
+    transform: translate(4px, 4px);
+}
+
+.btn-text {
+    font-family: var(--font-heading);
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    color: var(--pigment-black);
+    letter-spacing: 1px;
+}
+
+.btn-icon {
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid var(--pigment-black);
+}
+
+.arrow {
+    font-size: 24px;
+    font-weight: 700;
+    transform: rotate(-45deg);
+    transition: transform 0.3s;
+}
+
+.start-btn:hover .arrow {
+    transform: rotate(0deg);
+}
+
+/* Hero Badges */
+.hero-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #6b7280;
+}
+
+.badge-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.badge-icon {
+    color: var(--pigment-black);
+}
+
+/* Footer */
+.landing-v2-footer {
+    border-top: 4px solid var(--pigment-black);
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9fafb;
+}
+
+.footer-copyright {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.footer-dots {
+    display: flex;
+    gap: 4px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    border: 2px solid var(--pigment-black);
+}
+
+.dot.green {
+    background: var(--pigment-green);
+}
+
+.dot.black {
+    background: var(--pigment-black);
+}
+
+.dot.white {
+    background: var(--pigment-white);
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1024px) {
+    .landing-v2 {
+        flex-direction: column;
+    }
+
+    .landing-v2-sidebar {
+        width: 100%;
+        min-height: 35vh;
+        border-right: none;
+        border-bottom: 4px solid var(--pigment-black);
+    }
+
+    .sidebar-logo-main {
+        font-size: 9.8vh;
+    }
+
+    .sidebar-logo-suffix {
+        font-size: 4vh;
+    }
+
+    .landing-v2-content {
+        width: 100%;
+        min-height: 65vh;
+    }
+
+    .hero-headline {
+        font-size: 4rem;
+    }
+
+    .landing-v2-hero {
+        padding: 24px 32px;
+    }
+}
+
+@media (max-width: 640px) {
+    .hero-headline {
+        font-size: 3rem;
+    }
+
+    .btn-text {
+        font-size: 1.75rem;
+    }
+
+    .landing-v2-nav {
+        padding: 16px 24px;
+        gap: 16px;
+    }
+
+    .nav-link:not(.login-btn) {
+        display: none;
+    }
+}
