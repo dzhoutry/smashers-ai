@@ -11,7 +11,7 @@ create table public.profiles (
   avatar_background text[],
   avatar_background_type text,
   preferences jsonb default '{"darkMode": false, "publicProfile": false}'::jsonb,
-  plan jsonb default '{"tier": "Free Tier", "level": 1, "isPro": false}'::jsonb,
+  plan jsonb default '{"tier": "ALPHA SMASHER", "level": 1, "isPro": false}'::jsonb,
 
   constraint display_name_length check (char_length(display_name) >= 3)
 );

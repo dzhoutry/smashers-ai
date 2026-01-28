@@ -16,7 +16,7 @@ const DEFAULT_PROFILE = {
         publicProfile: false
     },
     plan: {
-        tier: 'Free Tier',
+        tier: 'ALPHA SMASHER',
         level: 1,
         isPro: false
     },

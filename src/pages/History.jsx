@@ -76,9 +76,13 @@ function History({ apiKey }) {
 
             {analyses.length === 0 ? (
                 <div className="empty-state">
-                    <div className="empty-icon">📊</div>
-                    <h3>No analyses yet</h3>
-                    <p>Start by analysing a video on the <a href="/">Analyse</a> page.</p>
+                    <div className="empty-icon-container">
+                        <span className="material-symbols-outlined empty-icon-lg">analytics</span>
+                    </div>
+                    <h2 className="empty-title">No analyses yet</h2>
+                    <p className="empty-description">
+                        Start by analysing a video on the <a href="/" className="empty-link">Analyse</a> page.
+                    </p>
                 </div>
             ) : (
                 <div className="history-layout">
@@ -144,25 +148,29 @@ function History({ apiKey }) {
                                     )}
                                 </div>
                             </div>
-                        ))}
+                        ))
+                        }
                     </div>
 
-                    {selectedAnalysis && (
-                        <div className="history-detail">
-                            <div className="detail-header">
-                                <h3>{formatDate(selectedAnalysis.createdAt)}</h3>
-                                <p className="detail-player">{selectedAnalysis.playerDescription}</p>
+                    {
+                        selectedAnalysis && (
+                            <div className="history-detail">
+                                <div className="detail-header">
+                                    <h3>{formatDate(selectedAnalysis.createdAt)}</h3>
+                                    <p className="detail-player">{selectedAnalysis.playerDescription}</p>
+                                </div>
+                                <AnalysisResults
+                                    analysis={selectedAnalysis.analysis}
+                                    modelId={selectedAnalysis.modelId}
+                                    playerName={selectedAnalysis.playerName}
+                                />
                             </div>
-                            <AnalysisResults
-                                analysis={selectedAnalysis.analysis}
-                                modelId={selectedAnalysis.modelId}
-                                playerName={selectedAnalysis.playerName}
-                            />
-                        </div>
-                    )}
-                </div>
-            )}
-        </div>
+                        )
+                    }
+                </div >
+            )
+            }
+        </div >
     );
 }
 

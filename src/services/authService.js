@@ -57,6 +57,28 @@ export const authService = {
     },
 
     /**
+     * Update user email
+     */
+    async updateUserEmail(newEmail) {
+        const { data, error } = await supabase.auth.updateUser({
+            email: newEmail
+        });
+        if (error) throw error;
+        return data;
+    },
+
+    /**
+     * Update user password
+     */
+    async updateUserPassword(newPassword) {
+        const { data, error } = await supabase.auth.updateUser({
+            password: newPassword
+        });
+        if (error) throw error;
+        return data;
+    },
+
+    /**
      * Subscribe to auth state changes
      */
     onAuthStateChange(callback) {

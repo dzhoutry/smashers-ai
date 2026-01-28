@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react'
-import { BrowserRouter, Routes, Route, NavLink, Navigate } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
+import { BrowserRouter, Routes, Route, NavLink, Navigate, Link } from 'react-router-dom'
 import { authService } from './services/authService'
+import { getUserProfile } from './services/userProfileService'
 import './App.css'
 import Landing from './pages/Landing'
 import LandingV2 from './pages/LandingV2'
@@ -17,6 +18,14 @@ function App() {
   })
   const [session, setSession] = useState(null)
   const [loading, setLoading] = useState(true)
+  const [profile, setProfile] = useState({
+    avatarStyle: 'adventurer',
+    avatarId: 'seed',
+    avatarBackground: ['b6e3f4'],
+    avatarBackgroundType: 'solid'
+  })
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+  const dropdownRef = useRef(null)
 
   useEffect(() => {
     if (apiKey) {
@@ -28,12 +37,20 @@ function App() {
     // Get initial session
     authService.getSession().then((session) => {
       setSession(session)
+      if (session) {
+        getUserProfile().then(setProfile)
+      }
       setLoading(false)
     })
 
     // Listen for changes
     const { data: { subscription } } = authService.onAuthStateChange((session) => {
       setSession(session)
+      if (session) {
+        getUserProfile().then(setProfile)
+      } else {
+        setProfile(null)
+      }
       setLoading(false)
     })
 
@@ -41,6 +58,19 @@ function App() {
       subscription.unsubscribe()
     }
   }, [])
+
+  // Click outside to close dropdown
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
+
+  const avatarUrl = profile ? `https://api.dicebear.com/9.x/${profile.avatarStyle || 'adventurer'}/svg?seed=${profile.avatarId || 'seed'}&backgroundColor=${(profile.avatarBackground || ['b6e3f4']).join(',')}&backgroundType=${profile.avatarBackgroundType || 'solid'}` : '';
 
   if (loading) {
     return (
@@ -74,17 +104,44 @@ function App() {
                       <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
                         History
                       </NavLink>
-                      <NavLink to="/settings" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
-                        Settings
-                      </NavLink>
+
                       {session && (
-                        <button
-                          className="nav-link logout-btn"
-                          onClick={() => authService.signOut()}
-                          style={{ background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
-                        >
-                          Logout
-                        </button>
+                        <div className="nav-profile-container" ref={dropdownRef}>
+                          <button
+                            className="nav-profile-btn"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                            title="Profile & Settings"
+                          >
+                            <img src={avatarUrl} alt="Profile" className="nav-avatar" />
+                          </button>
+
+                          {isDropdownOpen && (
+                            <div className="profile-dropdown">
+                              <div className="dropdown-header">
+                                <span className="dropdown-player-name">{profile.displayName || 'Athlete'}</span>
+                              </div>
+                              <div className="dropdown-divider"></div>
+                              <Link
+                                to="/settings"
+                                className="dropdown-item"
+                                onClick={() => setIsDropdownOpen(false)}
+                              >
+                                <span className="material-symbols-outlined">settings</span>
+                                Settings
+                              </Link>
+                              <button
+                                className="dropdown-item logout-item"
+                                onClick={() => {
+                                  authService.signOut()
+                                  setIsDropdownOpen(false)
+                                }}
+                              >
+                                <span className="material-symbols-outlined">logout</span>
+                                Logout
+                              </button>
+                            </div>
+                          )}
+                        </div>
                       )}
                     </nav>
                   </div>
