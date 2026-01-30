@@ -9,6 +9,7 @@ import { analyzeVideo, MODELS } from '../services/geminiService';
 import { getVideoDuration } from '../services/videoService';
 import { fetchYouTubeMetadata } from '../services/youtubeService';
 import { saveAnalysis, getAnalysisSummaries } from '../services/storageService';
+import { ArrowRight } from 'lucide-react';
 import './VideoAnalysis.css';
 
 function VideoAnalysis({ apiKey }) {
@@ -131,7 +132,7 @@ function VideoAnalysis({ apiKey }) {
                 };
             }
 
-            setAnalysisProgress('Preparing analysis...');
+            setAnalysisProgress(videoSource.type === 'file' ? 'Preparing upload...' : 'Fetching video info...');
 
             // Get previous analyses for context
             const previousAnalyses = await getAnalysisSummaries(3);
@@ -217,6 +218,20 @@ function VideoAnalysis({ apiKey }) {
                 </div>
             </div>
 
+            {isAnalyzing && (
+                <div className="analysis-status-box">
+                    <span className="analysis-status-text">{analysisProgress || 'Analysing...'}</span>
+                    {analysisProgress.includes('%') && (
+                        <div className="progress-mini-bar">
+                            <div
+                                className="progress-mini-fill"
+                                style={{ width: analysisProgress.match(/(\d+)%/)?.[1] + '%' }}
+                            />
+                        </div>
+                    )}
+                </div>
+            )}
+
             <button
                 className="btn btn-primary btn-lg analyze-btn"
                 onClick={handleAnalyze}
@@ -225,10 +240,12 @@ function VideoAnalysis({ apiKey }) {
                 {isAnalyzing ? (
                     <>
                         <span className="spinner"></span>
-                        {analysisProgress || 'Analysing...'}
+                        Analysing...
                     </>
                 ) : (
-                    'Analyse Video'
+                    <>
+                        Analyse Video <ArrowRight size={24} />
+                    </>
                 )}
             </button>
 

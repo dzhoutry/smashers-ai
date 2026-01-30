@@ -169,20 +169,21 @@ function formatTime(seconds) {
  * Upload a file to Gemini File API
  * @param {string} apiKey 
  * @param {File} file 
- * @param {function} onProgress - Progress callback for upload
+ * @param {function} onStatusUpdate - Progress callback for upload
  * @returns {Promise<string>} File URI
  */
-async function uploadToGemini(apiKey, file, onProgress) {
+async function uploadToGemini(apiKey, file, onStatusUpdate) {
     // 1. Initial request to get resumable upload URL
+    if (onStatusUpdate) onStatusUpdate('Preparing upload...');
     const uploadUrl = await startResumableUpload(apiKey, file);
 
     // 2. Perform the actual upload
-    const fileResult = await uploadFileData(uploadUrl, file, onProgress);
+    const fileResult = await uploadFileData(uploadUrl, file, onStatusUpdate);
     const fileUri = fileResult.file.uri;
     const fileName = fileResult.file.name;
 
     // 3. Wait for the file to be processed (ACTIVE state)
-    await waitForFileActive(apiKey, fileName);
+    await waitForFileActive(apiKey, fileName, onStatusUpdate);
 
     return fileUri;
 }
@@ -221,35 +222,49 @@ async function startResumableUpload(apiKey, file) {
 }
 
 /**
- * Upload the actual file data
+ * Upload the actual file data using XMLHttpRequest to track progress
  */
-async function uploadFileData(uploadUrl, file, onProgress) {
-    // Note: Standard fetch doesn't support upload progress naturally in all environments 
-    // but for simplicity we'll just send the full file here.
-    // In a production app, one might use XMLHttpRequest or similar for progress.
+async function uploadFileData(uploadUrl, file, onStatusUpdate) {
+    return new Promise((resolve, reject) => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('POST', uploadUrl);
 
-    const response = await fetch(uploadUrl, {
-        method: 'POST',
-        headers: {
-            'X-Goog-Upload-Command': 'upload, finalize',
-            'X-Goog-Upload-Offset': '0',
-            'Content-Length': file.size.toString()
-        },
-        body: file
+        xhr.setRequestHeader('X-Goog-Upload-Command', 'upload, finalize');
+        xhr.setRequestHeader('X-Goog-Upload-Offset', '0');
+
+        if (xhr.upload && onStatusUpdate) {
+            xhr.upload.onprogress = (event) => {
+                if (event.lengthComputable) {
+                    const percent = Math.round((event.loaded / event.total) * 100);
+                    onStatusUpdate(`Uploading video... ${percent}%`);
+                }
+            };
+        }
+
+        xhr.onload = () => {
+            if (xhr.status >= 200 && xhr.status < 300) {
+                try {
+                    resolve(JSON.parse(xhr.responseText));
+                } catch (e) {
+                    reject(new Error('Failed to parse upload response'));
+                }
+            } else {
+                reject(new Error(`Upload failed: ${xhr.statusText}`));
+            }
+        };
+
+        xhr.onerror = () => reject(new Error('Network error during upload'));
+        xhr.send(file);
     });
-
-    if (!response.ok) {
-        throw new Error(`Upload failed: ${response.statusText}`);
-    }
-
-    return await response.json();
 }
 
 /**
  * Poll for the file to become ACTIVE
  */
-async function waitForFileActive(apiKey, fileName) {
+async function waitForFileActive(apiKey, fileName, onStatusUpdate) {
     const url = `https://generativelanguage.googleapis.com/v1beta/${fileName}?key=${apiKey}`;
+
+    if (onStatusUpdate) onStatusUpdate('Processing video on Google servers...');
 
     while (true) {
         const response = await fetch(url);
@@ -305,6 +320,7 @@ export async function analyzeVideo({
     let parts = [];
 
     if (videoData.type === 'youtube') {
+        if (onStatusUpdate) onStatusUpdate('Fetching YouTube video info...');
         const youtubeUrl = buildYouTubeUrl(videoData.videoId, videoData.startTime, videoData.endTime);
         parts.push({
             fileData: {
@@ -314,11 +330,9 @@ export async function analyzeVideo({
         });
     } else if (videoData.type === 'file') {
         // Uploaded file - use File API
-        if (onStatusUpdate) onStatusUpdate('Uploading video to Google servers...');
-        const fileUri = await uploadToGemini(apiKey, videoData.file);
+        const fileUri = await uploadToGemini(apiKey, videoData.file, onStatusUpdate);
 
-        if (onStatusUpdate) onStatusUpdate('Video uploaded. Processing (this may take a minute)...');
-        // The uploadToGemini function already waits for ACTIVE state
+        if (onStatusUpdate) onStatusUpdate('Video ready. Starting analysis...');
 
         parts.push({
             fileData: {

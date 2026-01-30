@@ -90,9 +90,44 @@
 }
 
 
-.analyze-btn {
+button.btn.analyze-btn {
     width: 100%;
+    background: var(--pigment-white) !important;
+    color: var(--pigment-black) !important;
+    padding: var(--space-md);
+    font-family: var(--font-heading);
+    font-size: 2.2rem;
+    text-transform: uppercase;
+    border: 4px solid var(--pigment-black) !important;
+    box-shadow: var(--block-shadow);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     margin-bottom: var(--spacing-md);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+button.btn.analyze-btn:hover:not(:disabled) {
+    transform: translate(-4px, -4px);
+    box-shadow: 12px 12px 0px var(--pigment-red);
+    background: var(--pigment-black) !important;
+    color: var(--pigment-white) !important;
+}
+
+button.btn.analyze-btn:active:not(:disabled) {
+    transform: translate(-2px, -2px);
+    box-shadow: 4px 4px 0px var(--pigment-red);
+}
+
+button.btn.analyze-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    background: var(--pigment-white) !important;
+    border: 4px solid var(--pigment-black) !important;
+    box-shadow: var(--block-shadow);
+    transform: none;
 }
 
 /* Model Toggle Styles */
@@ -205,4 +240,51 @@
     background-color: #fee2e2;
     border: 1px solid #fca5a5;
     color: #991b1b;
+}
+
+/* Analysis Status Box */
+.analysis-status-box {
+    margin-bottom: var(--space-md);
+    padding: var(--space-md);
+    background: var(--pigment-white);
+    border: 4px solid var(--pigment-black);
+    box-shadow: 4px 4px 0px var(--pigment-black);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+    animation: slideIn 0.3s ease-out;
+}
+
+.analysis-status-text {
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    font-weight: 700;
+    color: var(--pigment-black);
+    display: block;
+}
+
+.progress-mini-bar {
+    width: 100%;
+    height: 8px;
+    background: #e5e7eb;
+    border: 2px solid var(--pigment-black);
+    overflow: hidden;
+}
+
+.progress-mini-fill {
+    height: 100%;
+    background: var(--pigment-yellow);
+    transition: width 0.3s ease;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

@@ -36,6 +36,12 @@ export async function getAnalysisHistory() {
                     videoUrl: item.video_url,
                     thumbnailUrl: item.thumbnail_url,
                     analysis: item.analysis,
+                    // Unpack metadata
+                    playerName: item.metadata?.playerName,
+                    videoSource: item.metadata?.videoSource,
+                    startTime: item.metadata?.startTime,
+                    endTime: item.metadata?.endTime,
+                    modelId: item.metadata?.modelId,
                     metadata: item.metadata
                 }));
                 // Cache in localStorage
@@ -75,10 +81,17 @@ export async function saveAnalysis(analysisData) {
                 .insert({
                     user_id: session.user.id,
                     player_description: analysisData.playerDescription,
-                    video_url: analysisData.videoUrl,
+                    video_url: analysisData.videoUrl || (analysisData.videoSource?.type === 'youtube' ? `https://youtube.com/watch?v=${analysisData.videoSource.videoId}` : null),
                     thumbnail_url: analysisData.thumbnailUrl,
                     analysis: analysisData.analysis,
-                    metadata: analysisData.metadata
+                    metadata: {
+                        playerName: analysisData.playerName,
+                        videoSource: analysisData.videoSource,
+                        startTime: analysisData.startTime,
+                        endTime: analysisData.endTime,
+                        modelId: analysisData.modelId,
+                        ...analysisData.metadata
+                    }
                 })
                 .select()
                 .single();
