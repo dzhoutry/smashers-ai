@@ -89,7 +89,7 @@ function AuthModal({ mode, onClose, inline = false }) {
             <div className="auth-modal-body">
                 {activeTab === 'forgot' && !isSuccess && (
                     <p className="auth-mode-description">
-                        Enter your email to receive password reset link.
+                        Enter your email to receive a password reset link.
                     </p>
                 )}
 
