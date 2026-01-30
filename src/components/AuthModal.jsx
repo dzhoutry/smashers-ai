@@ -28,6 +28,9 @@ function AuthModal({ mode, onClose, inline = false }) {
             if (activeTab === 'signup') {
                 await authService.signUp(email, password)
                 setIsSuccess(true)
+            } else if (activeTab === 'forgot') {
+                await authService.resetPassword(email)
+                setIsSuccess(true)
             } else {
                 await authService.signIn(email, password)
                 if (onClose) onClose()
@@ -57,7 +60,7 @@ function AuthModal({ mode, onClose, inline = false }) {
             {/* Header */}
             <div className="auth-modal-header">
                 <h2 className="auth-modal-title">
-                    {activeTab === 'signup' ? 'SIGN UP' : 'LOGIN'}
+                    {activeTab === 'signup' ? 'SIGN UP' : activeTab === 'forgot' ? 'RESET PASSWORD' : 'LOGIN'}
                 </h2>
                 {!inline && (
                     <button className="auth-modal-close" onClick={onClose}>
@@ -75,7 +78,7 @@ function AuthModal({ mode, onClose, inline = false }) {
                     Sign Up
                 </button>
                 <button
-                    className={`auth-tab ${activeTab === 'login' ? 'active' : ''}`}
+                    className={`auth-tab ${activeTab === 'login' || activeTab === 'forgot' ? 'active' : ''}`}
                     onClick={() => handleTabChange('login')}
                 >
                     Login
@@ -84,15 +87,26 @@ function AuthModal({ mode, onClose, inline = false }) {
 
             {/* Body */}
             <div className="auth-modal-body">
+                {activeTab === 'forgot' && !isSuccess && (
+                    <p className="auth-mode-description">
+                        Enter your email to receive password reset link.
+                    </p>
+                )}
+
                 {isSuccess ? (
                     <div className="auth-success-state">
-                        <div className="success-icon">✉️</div>
-                        <h3 className="success-title">CHECK YOUR INBOX</h3>
+                        <div className="success-icon">{activeTab === 'forgot' ? '📩' : '✉️'}</div>
+                        <h3 className="success-title">{activeTab === 'forgot' ? 'RESET LINK SENT' : 'CHECK YOUR INBOX'}</h3>
                         <p className="success-message">
-                            We've sent a verification link to <strong>{email}</strong>.
-                            Please confirm your email to activate your account.
+                            {activeTab === 'forgot'
+                                ? <>We've sent a password reset link to <strong>{email}</strong>.</>
+                                : <>We've sent a verification link to <strong>{email}</strong>. Please confirm your email to activate your account.</>
+                            }
                         </p>
-                        <button className="auth-submit-btn" onClick={() => setIsSuccess(false)}>
+                        <button className="auth-submit-btn" onClick={() => {
+                            setIsSuccess(false)
+                            if (activeTab === 'forgot') handleTabChange('login')
+                        }}>
                             BACK TO LOGIN
                         </button>
                     </div>
@@ -116,20 +130,35 @@ function AuthModal({ mode, onClose, inline = false }) {
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter' && email.length > 0) {
                                             e.preventDefault()
-                                            setShowPassword(true)
+                                            if (activeTab === 'forgot') {
+                                                handleSubmit()
+                                            } else {
+                                                setShowPassword(true)
+                                            }
                                         }
                                     }}
                                     required
                                 />
-                                {!showPassword && email.length > 0 && (
-                                    <button type="button" className="auth-next-inline" onClick={() => setShowPassword(true)}>
-                                        →
+                                {(activeTab === 'forgot' || !showPassword) && email.length > 0 && (
+                                    <button
+                                        type="button"
+                                        className="auth-next-inline"
+                                        onClick={() => {
+                                            if (activeTab === 'forgot') {
+                                                handleSubmit()
+                                            } else {
+                                                setShowPassword(true)
+                                            }
+                                        }}
+                                        disabled={loading}
+                                    >
+                                        {loading ? '...' : '→'}
                                     </button>
                                 )}
                             </div>
                         </div>
 
-                        {showPassword && (
+                        {showPassword && activeTab !== 'forgot' && (
                             <>
                                 <div className="auth-form-group">
                                     <label className="auth-label">PASSWORD</label>
@@ -151,10 +180,28 @@ function AuthModal({ mode, onClose, inline = false }) {
 
                                 {activeTab === 'login' && (
                                     <div className="auth-footer-link">
-                                        <a href="#">Forgot password?</a>
+                                        <button
+                                            type="button"
+                                            className="link-btn"
+                                            onClick={() => handleTabChange('forgot')}
+                                        >
+                                            Forgot password?
+                                        </button>
                                     </div>
                                 )}
                             </>
+                        )}
+
+                        {activeTab === 'forgot' && (
+                            <div className="auth-footer-link">
+                                <button
+                                    type="button"
+                                    className="link-btn"
+                                    onClick={() => handleTabChange('login')}
+                                >
+                                    Back to login
+                                </button>
+                            </div>
                         )}
 
                         {/* Divider */}
