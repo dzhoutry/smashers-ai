@@ -69,6 +69,27 @@
 .change-video-btn {
     font-size: var(--text-sm);
     padding: var(--space-sm) var(--space-md);
+    background: var(--pigment-white);
+    color: var(--pigment-black);
+    border: 3px solid var(--pigment-black) !important;
+    box-shadow: 4px 4px 0px var(--pigment-black);
+    font-family: var(--font-mono);
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+}
+
+.change-video-btn:hover {
+    transform: translate(-2px, -2px);
+    box-shadow: 6px 6px 0px var(--pigment-red);
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+}
+
+.change-video-btn:active {
+    transform: translate(0, 0);
+    box-shadow: 2px 2px 0px var(--pigment-black);
 }
 
 /* Mobile responsive */
