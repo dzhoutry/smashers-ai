@@ -1,5 +1,6 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { authService } from '../services/authService'
+import { supabase } from '../services/supabaseClient'
 import './AuthModal.css'
 
 function AuthModal({ mode, onClose, inline = false }) {
@@ -10,6 +11,21 @@ function AuthModal({ mode, onClose, inline = false }) {
     const [loading, setLoading] = useState(false)
     const [error, setError] = useState(null)
     const [isSuccess, setIsSuccess] = useState(false)
+    const [alphaStatus, setAlphaStatus] = useState({ count: 0, limit: 20, slots_remaining: 20, is_closed: false })
+
+    useEffect(() => {
+        const fetchAlphaStatus = async () => {
+            const { data, error } = await supabase.rpc('get_alpha_status')
+            if (!error && data) {
+                setAlphaStatus(data)
+                // Default to login if registration is closed
+                if (data.is_closed && activeTab === 'signup') {
+                    setActiveTab('login')
+                }
+            }
+        }
+        fetchAlphaStatus()
+    }, [activeTab])
 
     const handleTabChange = (tab) => {
         setActiveTab(tab)
@@ -72,10 +88,14 @@ function AuthModal({ mode, onClose, inline = false }) {
             {/* Tab Switcher */}
             <div className="auth-tabs">
                 <button
-                    className={`auth-tab ${activeTab === 'signup' ? 'active' : ''}`}
-                    onClick={() => handleTabChange('signup')}
+                    className={`auth-tab ${activeTab === 'signup' ? 'active' : ''} ${alphaStatus.is_closed ? 'disabled' : ''}`}
+                    onClick={() => !alphaStatus.is_closed && handleTabChange('signup')}
+                    title={alphaStatus.is_closed ? 'Registration closed' : ''}
                 >
-                    Sign Up
+                    <span className="tab-label">Sign Up</span>
+                    {activeTab === 'signup' && !alphaStatus.is_closed && (
+                        <span className="slots-pill">({alphaStatus.slots_remaining} LEFT)</span>
+                    )}
                 </button>
                 <button
                     className={`auth-tab ${activeTab === 'login' || activeTab === 'forgot' ? 'active' : ''}`}
@@ -87,6 +107,17 @@ function AuthModal({ mode, onClose, inline = false }) {
 
             {/* Body */}
             <div className="auth-modal-body">
+                {activeTab === 'signup' && alphaStatus.is_closed && (
+                    <div className="registration-closed-notice">
+                        <div className="notice-icon">🔒</div>
+                        <h3>ALPHA FULL</h3>
+                        <p>We've reached our 20-user limit for the Alpha release. Please follow us for Beta release updates!</p>
+                        <button className="auth-submit-btn" onClick={() => handleTabChange('login')}>
+                            GO TO LOGIN
+                        </button>
+                    </div>
+                )}
+
                 {activeTab === 'forgot' && !isSuccess && (
                     <p className="auth-mode-description">
                         Enter your email to receive a password reset link.

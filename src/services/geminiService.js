@@ -311,7 +311,9 @@ export async function analyzeVideo({
     model = DEFAULT_MODEL,
     onStatusUpdate
 }) {
-    if (!apiKey) {
+    const isAlphaUser = !apiKey; // If no key provided, we attempt to use proxy
+
+    if (!apiKey && !isAlphaUser) {
         throw new Error('API key is required. Please add your Gemini API key in Settings.');
     }
 
@@ -348,27 +350,55 @@ export async function analyzeVideo({
 
     if (onStatusUpdate) onStatusUpdate('Generating analysis...');
 
-    const response = await fetch(
-        `${API_BASE}/models/${model}:generateContent?key=${apiKey}`,
-        {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                contents: [{ role: 'user', parts }],
-                generationConfig: {
-                    temperature: 0.7,
-                    maxOutputTokens: 8192,
-                    responseMimeType: 'application/json'
-                }
-            })
-        }
-    );
+    let response;
+
+    if (apiKey) {
+        response = await fetch(
+            `${API_BASE}/models/${model}:generateContent?key=${apiKey}`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    contents: [{ role: 'user', parts }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 8192,
+                        responseMimeType: 'application/json'
+                    }
+                })
+            }
+        );
+    } else {
+        // Use Supabase Proxy
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!session) throw new Error('Authentication required for Alpha analysis');
+
+        response = await fetch(
+            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-proxy`,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    model,
+                    contents: [{ role: 'user', parts }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 8192,
+                        responseMimeType: 'application/json'
+                    }
+                })
+            }
+        );
+    }
 
     if (!response.ok) {
         const error = await response.json().catch(() => ({}));
-        throw new Error(error.error?.message || `API request failed: ${response.status}`);
+        throw new Error(error.error?.message || error.error || `API request failed: ${response.status}`);
     }
 
     const data = await response.json();

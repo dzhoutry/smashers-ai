@@ -22,7 +22,7 @@ function Landing() {
                 </div>
                 <div className="system-status">
                     <span className="status-dot"></span>
-                    <span className="status-text">SYSTEM_READY /// V.2.0</span>
+                    <span className="status-text">SYSTEM_READY /// V.1.0 ALPHA</span>
                 </div>
             </div>
 

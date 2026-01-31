@@ -57,16 +57,42 @@ create policy "Users can update their own analyses." on public.analyses
 create policy "Users can delete their own analyses." on public.analyses
   for delete using (auth.uid() = user_id);
 
--- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
--- See https://supabase.com/docs/guides/auth/managing-user-data#using-triggers for more details.
-create function public.handle_new_user()
-returns trigger as $$
+-- Function to get alpha status (current user count and limit)
+create or replace function public.get_alpha_status()
+returns jsonb
+language plpgsql
+security definer
+as $$
+declare
+  user_count int;
+  user_limit int := 20;
 begin
+  select count(*) into user_count from public.profiles;
+  return jsonb_build_object(
+    'count', user_count,
+    'limit', user_limit,
+    'slots_remaining', greatest(0, user_limit - user_count),
+    'is_closed', user_count >= user_limit
+  );
+end;
+$$;
+
+-- This trigger automatically creates a profile entry when a new user signs up via Supabase Auth.
+-- Also enforces the 20-user alpha limit.
+create or replace function public.handle_new_user()
+returns trigger as $$
+declare
+  user_count int;
+begin
+  -- Check if we've reached the 20-user limit
+  select count(*) into user_count from public.profiles;
+  
+  if user_count >= 20 then
+    raise exception 'Alpha signup limit reached. Please check back for the Beta release!';
+  end if;
+
   insert into public.profiles (id, display_name, email, avatar_style, avatar_id)
   values (new.id, new.raw_user_meta_data->>'full_name', new.email, 'adventurer', 'seed');
   return new;
 end;
 $$ language plpgsql security definer;
-create trigger on_auth_user_created
-  after insert on auth.users
-  for each row execute procedure public.handle_new_user();

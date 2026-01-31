@@ -21,7 +21,7 @@ function LandingV2({ session }) {
                     <span className="sidebar-logo-main">SMASHERS</span>
                 </div>
                 <div className="sidebar-status">
-                    SYSTEM_READY /// V.2.0
+                    SYSTEM_READY /// V.1.0 ALPHA
                 </div>
             </div>
 
@@ -44,7 +44,7 @@ function LandingV2({ session }) {
 
                             <div className="hero-badges">
                                 <span className="badge-item">
-                                    <span className="badge-icon">✓</span> Beta Access
+                                    <span className="badge-icon">✓</span> Alpha Access
                                 </span>
                                 <span className="badge-item">
                                     <span className="badge-icon">⚡</span> Powered by Gemini

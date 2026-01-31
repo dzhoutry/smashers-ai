@@ -97,7 +97,12 @@
 
 .auth-tab {
     flex: 1;
-    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 56px;
+    padding: 8px 16px;
     background: transparent;
     color: var(--pigment-black);
     border: 2px solid transparent;
@@ -108,6 +113,14 @@
     cursor: pointer;
     transition: all 0.2s;
     text-align: center;
+    line-height: 1.2;
+}
+
+.slots-pill {
+    font-size: 11px;
+    font-weight: 500;
+    margin-top: 2px;
+    opacity: 0.9;
 }
 
 .auth-tab.active {
