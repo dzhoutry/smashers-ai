@@ -8,11 +8,13 @@ import StepProgressBar from '../components/StepProgressBar';
 import { analyzeVideo, MODELS } from '../services/geminiService';
 import { getVideoDuration } from '../services/videoService';
 import { fetchYouTubeMetadata } from '../services/youtubeService';
-import { saveAnalysis, getAnalysisSummaries } from '../services/storageService';
+import { getUserProfile } from '../services/userProfileService';
 import { ArrowRight } from 'lucide-react';
 import './VideoAnalysis.css';
 
-function VideoAnalysis({ apiKey }) {
+function VideoAnalysis({ apiKey, session }) {
+    // User profile/plan state
+    const [profile, setProfile] = useState(null);
     // Video input state
     const [videoSource, setVideoSource] = useState(null); // { type: 'file' | 'youtube', ... }
     const [videoDuration, setVideoDuration] = useState(null);
@@ -35,6 +37,16 @@ function VideoAnalysis({ apiKey }) {
     const [analysisResult, setAnalysisResult] = useState(null);
     const [selectedModel, setSelectedModel] = useState(MODELS.FLASH_2_0);
     const [error, setError] = useState(null);
+
+    // Fetch profile on mount to check plan
+    useEffect(() => {
+        if (session) {
+            getUserProfile().then(setProfile);
+        }
+    }, [session]);
+
+    const isAlphaUser = profile?.plan?.tier === 'ALPHA SMASHER';
+    const hasAccess = apiKey || isAlphaUser;
 
     // Compute current step based on state
     const currentStep = !videoSource ? 1 : !analysisResult ? 2 : 3;
@@ -95,7 +107,7 @@ function VideoAnalysis({ apiKey }) {
 
     // Handle analysis submission
     const handleAnalyze = async () => {
-        if (!apiKey) {
+        if (!hasAccess) {
             setError('Please add your Gemini API key in Settings first.');
             return;
         }
@@ -175,7 +187,7 @@ function VideoAnalysis({ apiKey }) {
         }
     };
 
-    const canAnalyze = videoSource && playerDescription.trim() && !isAnalyzing;
+    const canAnalyze = videoSource && playerDescription.trim() && !isAnalyzing && hasAccess;
 
     // Render config options panel (used in Step 2 and Step 3)
     const renderConfigOptions = (compact = false) => (
@@ -264,10 +276,16 @@ function VideoAnalysis({ apiKey }) {
                 </p>
             </div>
 
-            {!apiKey && (
+            {!hasAccess && (
                 <div className="alert alert-warning">
                     <strong>API Key Required:</strong> Please add your Gemini API key in{' '}
                     <a href="/settings">Settings</a> to use the analysis feature.
+                </div>
+            )}
+
+            {isAlphaUser && !apiKey && (
+                <div className="alert alert-info">
+                    <strong>✨ Alpha Smasher:</strong> You are using the shared Gemini API. No local API key required!
                 </div>
             )}
 
