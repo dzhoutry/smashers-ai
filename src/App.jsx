@@ -104,6 +104,14 @@ function App() {
                       <NavLink to="/history" className={({ isActive }) => isActive ? 'nav-link active' : 'nav-link'}>
                         History
                       </NavLink>
+                      <a
+                        href="https://forms.gle/ynDKUB2TXf7wX3ju8"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="nav-link"
+                      >
+                        Feedback
+                      </a>
 
                       {session && (
                         <div className="nav-profile-container" ref={dropdownRef}>
