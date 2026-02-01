@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import VideoInput from '../components/VideoInput';
 import VideoPlayer from '../components/VideoPlayer';
 import VideoTrimmer from '../components/VideoTrimmer';
