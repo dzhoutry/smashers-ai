@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { authService } from '../services/authService';
 import { testApiKey } from '../services/geminiService';
-import { getUserProfile, updateUserProfile } from '../services/userProfileService';
+import { getUserProfile, updateUserProfile, calculatePlayerStats } from '../services/userProfileService';
 import { exportHistory, clearHistory } from '../services/storageService';
 import AvatarPickerModal from '../components/AvatarPickerModal';
 import './Settings.css';
@@ -15,6 +15,7 @@ function Settings({ apiKey, setApiKey, session }) {
         preferences: { darkMode: false, publicProfile: false },
         plan: { tier: 'ALPHA SMASHER' }
     });
+    const [playerStats, setPlayerStats] = useState({ rank: 'ROOKIE', level: 1 });
     const [pendingProfile, setPendingProfile] = useState(null);
     const [isAvatarModalOpen, setIsAvatarModalOpen] = useState(false);
 
@@ -42,6 +43,7 @@ function Settings({ apiKey, setApiKey, session }) {
             setProfile(p);
             setPendingProfile(p);
         });
+        calculatePlayerStats().then(setPlayerStats);
     }, []);
 
     const handleProfileUpdate = (field, value) => {
@@ -64,6 +66,7 @@ function Settings({ apiKey, setApiKey, session }) {
             const updated = await updateUserProfile(pendingProfile);
             setProfile(updated);
             setPendingProfile(updated);
+            calculatePlayerStats().then(setPlayerStats);
             setSecurityStatus({ type: 'success', message: 'Profile updated successfully!' });
             setTimeout(() => setSecurityStatus(null), 3000);
         } catch (err) {
@@ -226,8 +229,8 @@ function Settings({ apiKey, setApiKey, session }) {
                             <div className="profile-meta">
                                 <h3 className="meta-label">Athlete Rank</h3>
                                 <div className="rank-badge-container">
-                                    <span className="rank-badge">PRO</span>
-                                    <span className="rank-level">Level 42</span>
+                                    <span className="rank-badge">{playerStats.rank}</span>
+                                    <span className="rank-level">Level {playerStats.level}</span>
                                 </div>
                             </div>
                         </div>

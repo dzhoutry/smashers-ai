@@ -1,4 +1,5 @@
 import { supabase } from './supabaseClient';
+import { getAnalysisHistory } from './storageService';
 
 /**
  * Service to manage user profile data
@@ -124,4 +125,61 @@ export async function updateUserProfile(updates) {
 export function resetProfile() {
     localStorage.removeItem(STORAGE_KEY);
     return { ...DEFAULT_PROFILE };
+}
+
+/**
+ * Calculate dynamic player stats based on analysis history
+ * @returns {Promise<{rank: string, level: number, stats: object}>}
+ */
+export async function calculatePlayerStats() {
+    const profile = await getUserProfile();
+    const history = await getAnalysisHistory();
+    const displayName = profile.displayName.toLowerCase();
+
+    // 1. Calculate Level (Grit/Experience) - Based on total unique analyses
+    const totalAnalyses = history.length;
+    // Formula: easy to get to 10, harder to 50, very hard to 100
+    const calculatedLevel = Math.max(1, Math.floor(2.5 * Math.sqrt(totalAnalyses)));
+
+    // 2. Calculate Rank (Skill) - Based on weighted average of scores
+    // Only include analyses where the player name matches the user
+    const playerAnalyses = history
+        .filter(a => a.playerName?.toLowerCase().includes(displayName) || a.playerDescription?.toLowerCase().includes(displayName))
+        .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Newest first
+
+    if (playerAnalyses.length === 0) {
+        return {
+            rank: 'ROOKIE',
+            level: calculatedLevel,
+            stats: { count: 0, total: totalAnalyses }
+        };
+    }
+
+    let weightedSum = 0;
+    let weightTotal = 0;
+
+    playerAnalyses.forEach((a, index) => {
+        const score = a.analysis?.overallScore || 0;
+        const weight = Math.pow(0.9, index); // Exponential weight decay
+        weightedSum += score * weight;
+        weightTotal += weight;
+    });
+
+    const skillScore = weightedSum / weightTotal;
+
+    let rank = 'ROOKIE';
+    if (skillScore >= 8) rank = 'PRO';
+    else if (skillScore >= 6) rank = 'ADVANCED';
+    else if (skillScore >= 4) rank = 'INTERMEDIATE';
+    else if (skillScore >= 2) rank = 'AMATEUR';
+
+    return {
+        rank,
+        level: calculatedLevel,
+        stats: {
+            skillScore: parseFloat(skillScore.toFixed(1)),
+            playerCount: playerAnalyses.length,
+            totalCount: totalAnalyses
+        }
+    };
 }
