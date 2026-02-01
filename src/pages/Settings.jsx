@@ -263,7 +263,15 @@ function Settings({ apiKey, setApiKey, session }) {
 
                                     <div className="form-grid">
                                         <div className="form-group">
-                                            <label>Display Name</label>
+                                            <label>
+                                                Player Name
+                                                <div className="tooltip-trigger">
+                                                    <span className="material-symbols-outlined help-icon">help</span>
+                                                    <div className="tooltip-box">
+                                                        If this name matches the "Player Name" in your analysis history, your rank and level will automatically sync here!
+                                                    </div>
+                                                </div>
+                                            </label>
                                             <input
                                                 type="text"
                                                 className="input-field"

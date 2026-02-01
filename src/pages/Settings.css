@@ -342,8 +342,66 @@
     font-size: 0.7rem;
     opacity: 0.6;
     text-transform: none;
-    /* Keep (Managed by Google) readable */
     font-weight: 400;
+}
+
+/* Tooltip Styles */
+.tooltip-trigger {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-left: 4px;
+    cursor: help;
+}
+
+.help-icon {
+    font-size: 14px !important;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: center;
+}
+
+.tooltip-trigger:hover .help-icon {
+    opacity: 1;
+    color: var(--pigment-green);
+}
+
+.tooltip-box {
+    position: absolute;
+    bottom: 150%;
+    left: 0;
+    width: 200px;
+    padding: 12px;
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    font-size: 11px;
+    font-family: var(--font-mono);
+    text-transform: none;
+    line-height: 1.4;
+    border: 2px solid var(--pigment-green);
+    box-shadow: 4px 4px 0px rgba(0, 0, 0, 0.3);
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(10px);
+    transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 1000;
+}
+
+.tooltip-trigger:hover .tooltip-box {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Tooltip arrow */
+.tooltip-box::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 8px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 6px solid var(--pigment-green);
 }
 
 .input-field {
@@ -658,14 +716,6 @@
     border: 4px solid transparent;
     /* Keeps layout size stable */
     color: var(--pigment-black);
-}
-
-.btn-primary {
-    /* No specific overrides needed for default state */
-}
-
-.btn-secondary {
-    /* No specific overrides needed for default state */
 }
 
 /* HOVER STATES */
