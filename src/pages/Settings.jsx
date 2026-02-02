@@ -465,49 +465,67 @@ function Settings({ apiKey, setApiKey, session }) {
                                         <div className="input-row">
                                             <input
                                                 id="api-key"
-                                                type={showApiKey ? "text" : "password"}
+                                                type={profile?.plan?.tier === 'ALPHA SMASHER' ? 'text' : (showApiKey ? 'text' : 'password')}
                                                 className="input"
-                                                value={apiInputValue}
+                                                value={profile?.plan?.tier === 'ALPHA SMASHER' ? 'ALPHA SMASHER (Shared Key Active)' : apiInputValue}
                                                 onChange={(e) => setApiInputValue(e.target.value)}
                                                 placeholder="Enter your Gemini API key"
+                                                disabled={profile?.plan?.tier === 'ALPHA SMASHER'}
                                             />
-                                            <button
-                                                className="toggle-visibility-btn"
-                                                onClick={() => setShowApiKey(!showApiKey)}
-                                                title={showApiKey ? "Hide API Key" : "Show API Key"}
-                                            >
-                                                <span className="material-symbols-outlined">
-                                                    {showApiKey ? 'visibility_off' : 'visibility'}
-                                                </span>
-                                            </button>
+                                            {profile?.plan?.tier !== 'ALPHA SMASHER' && (
+                                                <button
+                                                    className="toggle-visibility-btn"
+                                                    onClick={() => setShowApiKey(!showApiKey)}
+                                                    title={showApiKey ? "Hide API Key" : "Show API Key"}
+                                                >
+                                                    <span className="material-symbols-outlined">
+                                                        {showApiKey ? 'visibility_off' : 'visibility'}
+                                                    </span>
+                                                </button>
+                                            )}
                                         </div>
-                                        <p className="helper-text">
-                                            Get your API key from{' '}
-                                            <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">
-                                                Google AI Studio
-                                            </a>
-                                        </p>
+                                        {profile?.plan?.tier === 'ALPHA SMASHER' ? (
+                                            <p className="helper-text success-note" style={{ color: 'var(--pigment-green)', fontWeight: '700', fontSize: '11px', marginTop: '8px' }}>
+                                                <span className="material-symbols-outlined" style={{ fontSize: '14px', verticalAlign: 'middle', marginRight: '4px' }}>verified</span>
+                                                Alpha Smasher Perks: Automatic access via shared high-performance API. No key required.
+                                            </p>
+                                        ) : (
+                                            <p className="helper-text">
+                                                Get your API key from{' '}
+                                                <a href="https://aistudio.google.com/apikey" target="_blank" rel="noopener noreferrer">
+                                                    Google AI Studio
+                                                </a>
+                                            </p>
+                                        )}
                                     </div>
 
                                     <div className="api-key-actions">
-                                        <button
-                                            className="btn btn-primary"
-                                            onClick={handleSaveApiKey}
-                                            disabled={apiInputValue === apiKey}
-                                        >
-                                            {apiSaved ? '✓ Saved' : 'Save Key'}
-                                        </button>
-                                        <button
-                                            className="btn btn-secondary"
-                                            onClick={handleTestApiKey}
-                                            disabled={!apiInputValue || testStatus === 'testing'}
-                                        >
-                                            {testStatus === 'testing' ? 'Testing...' : 'Test Connection'}
-                                        </button>
-                                        {apiKey && (
-                                            <button className="btn btn-secondary" onClick={handleClearApiKey}>
-                                                Clear Key
-                                            </button>
+                                        {profile?.plan?.tier !== 'ALPHA SMASHER' ? (
+                                            <>
+                                                <button
+                                                    className="btn btn-primary"
+                                                    onClick={handleSaveApiKey}
+                                                    disabled={apiInputValue === apiKey}
+                                                >
+                                                    {apiSaved ? '✓ Saved' : 'Save Key'}
+                                                </button>
+                                                <button
+                                                    className="btn btn-secondary"
+                                                    onClick={handleTestApiKey}
+                                                    disabled={!apiInputValue || testStatus === 'testing'}
+                                                >
+                                                    {testStatus === 'testing' ? 'Testing...' : 'Test Connection'}
+                                                </button>
+                                                {apiKey && (
+                                                    <button className="btn btn-secondary" onClick={handleClearApiKey}>
+                                                        Clear Key
+                                                    </button>
+                                                )}
+                                            </>
+                                        ) : (
+                                            <div className="alpha-badge-info">
+                                                <span className="badge-label">PREMIUM ALPHA ACCESS</span>
+                                            </div>
                                         )}
                                     </div>
 
