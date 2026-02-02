@@ -283,12 +283,6 @@ function VideoAnalysis({ apiKey, session }) {
                 </div>
             )}
 
-            {isAlphaUser && !apiKey && (
-                <div className="alert alert-info">
-                    <strong>✨ Alpha Smasher:</strong> You are using the shared Gemini API. No local API key required!
-                </div>
-            )}
-
             <StepProgressBar currentStep={currentStep} />
 
             {/* Step 1: Upload - Centered Hero */}
