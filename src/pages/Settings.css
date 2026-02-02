@@ -751,6 +751,25 @@
     transform: none;
 }
 
+/* ALPHA ACCESS BADGE */
+.alpha-badge-info {
+    display: inline-flex;
+    padding: 10px 20px;
+    background: var(--pigment-black);
+    color: var(--pigment-white);
+    border: 3px solid var(--pigment-black);
+    box-shadow: 4px 4px 0px var(--pigment-green);
+    transform: rotate(-1deg);
+    margin: 10px 0;
+}
+
+.badge-label {
+    font-family: var(--font-mono);
+    font-weight: 800;
+    font-size: 13px;
+    letter-spacing: 1px;
+}
+
 .test-result {
     padding: 0;
     margin-top: 16px;
