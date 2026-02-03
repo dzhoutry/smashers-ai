@@ -403,8 +403,14 @@ export async function analyzeVideo({
         });
 
         if (invokeError) {
-            console.error('Edge Function invocation error:', invokeError);
-            throw new Error(invokeError.message || `Proxy request failed: ${invokeError.status}`);
+            console.error('Edge Function invocation error detailed:', JSON.stringify(invokeError, null, 2));
+            // Try to extract a meaningful message from the error context or body
+            let errorMessage = invokeError.message;
+            if (invokeError.context && invokeError.context.json) {
+                const errorBody = await invokeError.context.json().catch(() => ({}));
+                if (errorBody.error) errorMessage = errorBody.error;
+            }
+            throw new Error(errorMessage || `Proxy request failed: ${invokeError.status}`);
         }
 
         // Response from invoke is directly the parsed JSON if successful
