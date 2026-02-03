@@ -394,7 +394,8 @@ export async function analyzeVideo({
         if (!session) throw new Error('Authentication required for Alpha analysis');
 
         console.log('Attempting proxy request with headers:', {
-            Authorization: `Bearer ${session.access_token.substring(0, 10)}...`,
+            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY.substring(0, 5)}...`,
+            'x-user-token': `${session.access_token.substring(0, 5)}...`,
             apikey: import.meta.env.VITE_SUPABASE_ANON_KEY.substring(0, 5) + '...'
         });
 
@@ -405,7 +406,8 @@ export async function analyzeVideo({
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${session.access_token}`,
+                        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
+                        'x-user-token': session.access_token,
                         'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
                     },
                     body: JSON.stringify({

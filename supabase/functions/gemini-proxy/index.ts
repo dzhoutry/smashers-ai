@@ -15,10 +15,13 @@ serve(async (req) => {
 
     try {
         const authHeader = req.headers.get('Authorization')
-        if (!authHeader) throw new Error('No authorization header')
+        const userTokenHeader = req.headers.get('x-user-token')
+
+        if (!authHeader && !userTokenHeader) throw new Error('No authorization header')
 
         const supabase = createClient(SUPABASE_URL!, SUPABASE_SERVICE_ROLE_KEY!)
-        const token = authHeader.replace('Bearer ', '')
+        // Prioritize custom user token header (gateway bypass), otherwise use standard auth header
+        const token = userTokenHeader || authHeader!.replace('Bearer ', '')
         const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
         if (authError || !user) throw new Error('Unauthorized')
