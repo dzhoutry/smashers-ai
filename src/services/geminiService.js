@@ -351,10 +351,8 @@ export async function analyzeVideo({
 
     if (onStatusUpdate) onStatusUpdate('Generating analysis...');
 
-    let response;
-
     if (apiKey) {
-        response = await fetch(
+        const response = await fetch(
             `${API_BASE}/models/${model}:generateContent?key=${apiKey}`,
             {
                 method: 'POST',
@@ -371,50 +369,57 @@ export async function analyzeVideo({
                 })
             }
         );
+
+        if (!response.ok) {
+            const error = await response.json().catch(() => ({}));
+            throw new Error(error.error?.message || error.error || `API request failed: ${response.status}`);
+        }
+
+        const data = await response.json();
+        const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!textContent) {
+            throw new Error('No analysis returned from API');
+        }
+
+        try {
+            return JSON.parse(textContent);
+        } catch (e) {
+            console.error('Failed to parse API response:', textContent);
+            throw new Error('Failed to parse analysis response');
+        }
     } else {
-        // Use Supabase Proxy
-        const { data: { session } } = await supabase.auth.getSession();
-        if (!session) throw new Error('Authentication required for Alpha analysis');
-
-        response = await fetch(
-            `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-proxy`,
-            {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${session.access_token}`,
-                    'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
-                },
-                body: JSON.stringify({
-                    model,
-                    contents: [{ role: 'user', parts }],
-                    generationConfig: {
-                        temperature: 0.7,
-                        maxOutputTokens: 8192,
-                        responseMimeType: 'application/json'
-                    }
-                })
+        // Use Supabase Proxy (Alpha Users)
+        const { data, error: invokeError } = await supabase.functions.invoke('gemini-proxy', {
+            body: {
+                model,
+                contents: [{ role: 'user', parts }],
+                generationConfig: {
+                    temperature: 0.7,
+                    maxOutputTokens: 8192,
+                    responseMimeType: 'application/json'
+                }
             }
-        );
-    }
+        });
 
-    if (!response.ok) {
-        const error = await response.json().catch(() => ({}));
-        throw new Error(error.error?.message || error.error || `API request failed: ${response.status}`);
-    }
+        if (invokeError) {
+            console.error('Edge Function invocation error:', invokeError);
+            throw new Error(invokeError.message || `Proxy request failed: ${invokeError.status}`);
+        }
 
-    const data = await response.json();
-    const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+        // Response from invoke is directly the parsed JSON if successful
+        const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
-    if (!textContent) {
-        throw new Error('No analysis returned from API');
-    }
+        if (!textContent) {
+            throw new Error('No analysis returned from proxy');
+        }
 
-    try {
-        return JSON.parse(textContent);
-    } catch (e) {
-        console.error('Failed to parse API response:', textContent);
-        throw new Error('Failed to parse analysis response');
+        try {
+            return JSON.parse(textContent);
+        } catch (e) {
+            console.error('Failed to parse proxy response:', textContent);
+            throw new Error('Failed to parse analysis response');
+        }
     }
 }
 
