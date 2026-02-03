@@ -9,6 +9,7 @@ import { analyzeVideo, MODELS } from '../services/geminiService';
 import { getVideoDuration } from '../services/videoService';
 import { fetchYouTubeMetadata } from '../services/youtubeService';
 import { getUserProfile } from '../services/userProfileService';
+import { saveAnalysis, getAnalysisSummaries } from '../services/storageService';
 import { ArrowRight } from 'lucide-react';
 import './VideoAnalysis.css';
 
@@ -67,7 +68,7 @@ function VideoAnalysis({ apiKey, session }) {
             }
         } else if (source.type === 'youtube') {
             try {
-                if (!apiKey) {
+                if (!hasAccess) {
                     setError('Please add your API key in Settings to load YouTube metadata.');
                     return;
                 }
