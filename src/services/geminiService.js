@@ -389,63 +389,52 @@ export async function analyzeVideo({
             throw new Error('Failed to parse analysis response');
         }
     } else {
-        // Use Supabase Proxy (Alpha Users) - Using raw fetch for better debugging
+        // Use Vercel Proxy (Alpha Users)
         const { data: { session } } = await supabase.auth.getSession();
         if (!session) throw new Error('Authentication required for Alpha analysis');
 
-        console.log('Attempting proxy request with headers:', {
-            Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY.substring(0, 5)}...`,
-            'x-user-token': `${session.access_token.substring(0, 5)}...`,
-            apikey: import.meta.env.VITE_SUPABASE_ANON_KEY.substring(0, 5) + '...'
-        });
-
         try {
-            const proxyResponse = await fetch(
-                `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/gemini-proxy`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`,
-                        'x-user-token': session.access_token,
-                        'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY
-                    },
-                    body: JSON.stringify({
-                        model,
-                        contents: [{ role: 'user', parts }],
-                        generationConfig: {
-                            temperature: 0.7,
-                            maxOutputTokens: 8192,
-                            responseMimeType: 'application/json'
-                        }
-                    })
-                }
-            );
-
-            // Access the RAW text first to debug non-JSON errors (like 500s)
-            const rawText = await proxyResponse.text();
+            const proxyResponse = await fetch('/api/gemini-proxy', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                },
+                body: JSON.stringify({
+                    model,
+                    contents: [{ role: 'user', parts }],
+                    generationConfig: {
+                        temperature: 0.7,
+                        maxOutputTokens: 8192,
+                        responseMimeType: 'application/json'
+                    }
+                })
+            });
 
             if (!proxyResponse.ok) {
-                console.error(`Proxy failed (${proxyResponse.status}):`, rawText);
+                const errorText = await proxyResponse.text();
+                let errorMessage = `Proxy failed: ${proxyResponse.status}`;
                 try {
-                    // Try to parse error as JSON if possible
-                    const errorJson = JSON.parse(rawText);
-                    throw new Error(errorJson.error || errorJson.message || `Proxy error: ${proxyResponse.status}`);
+                    const errorJson = JSON.parse(errorText);
+                    if (errorJson.error) errorMessage = errorJson.error;
                 } catch (e) {
-                    // Fallback to raw text if not JSON
-                    throw new Error(`Proxy failed (${proxyResponse.status}): ${rawText.substring(0, 200)}`);
+                    errorMessage += ` - ${errorText.substring(0, 100)}`;
                 }
+                throw new Error(errorMessage);
+            }
+
+            const data = await proxyResponse.json();
+            const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
+
+            if (!textContent) {
+                throw new Error('No analysis returned from proxy');
             }
 
             try {
-                const data = JSON.parse(rawText);
-                const textContent = data.candidates?.[0]?.content?.parts?.[0]?.text;
-                if (!textContent) throw new Error('No analysis returned from proxy');
                 return JSON.parse(textContent);
             } catch (e) {
-                console.error('Failed to parse proxy JSON:', e);
-                console.error('Raw proxy response:', rawText);
-                throw new Error('Invalid response format from proxy');
+                console.error('Failed to parse proxy response:', textContent);
+                throw new Error('Failed to parse analysis response');
             }
 
         } catch (error) {
