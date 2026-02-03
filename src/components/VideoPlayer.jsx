@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useImperativeHandle, forwardRef } from 'react';
 
-const VideoPlayer = forwardRef(({ videoSource }, ref) => {
+const VideoPlayer = forwardRef(({ videoSource, onDurationReceived }, ref) => {
     const videoRef = useRef(null);
     const iframeRef = useRef(null);
     const ytPlayerRef = useRef(null);
@@ -49,6 +49,13 @@ const VideoPlayer = forwardRef(({ videoSource }, ref) => {
                         events: {
                             'onReady': (event) => {
                                 console.log('YT Player Ready');
+                                // Report duration back to parent for Alpha users/fallback
+                                if (onDurationReceived) {
+                                    const duration = event.target.getDuration();
+                                    if (duration > 0) {
+                                        onDurationReceived(duration);
+                                    }
+                                }
                             }
                         }
                     });

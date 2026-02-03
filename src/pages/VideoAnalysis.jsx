@@ -16,6 +16,7 @@ import './VideoAnalysis.css';
 function VideoAnalysis({ apiKey, session }) {
     // User profile/plan state
     const [profile, setProfile] = useState(null);
+    const [isProfileLoading, setIsProfileLoading] = useState(true);
     // Video input state
     const [videoSource, setVideoSource] = useState(null); // { type: 'file' | 'youtube', ... }
     const [videoDuration, setVideoDuration] = useState(null);
@@ -42,12 +43,16 @@ function VideoAnalysis({ apiKey, session }) {
     // Fetch profile on mount to check plan
     useEffect(() => {
         if (session) {
-            getUserProfile().then(setProfile);
+            setIsProfileLoading(true);
+            getUserProfile().then(p => {
+                setProfile(p);
+                setIsProfileLoading(false);
+            }).catch(() => setIsProfileLoading(false));
         }
     }, [session]);
 
     const isAlphaUser = profile?.plan?.tier === 'ALPHA SMASHER';
-    const hasAccess = apiKey || isAlphaUser;
+    const hasAccess = isProfileLoading || apiKey || isAlphaUser;
 
     // Compute current step based on state
     const currentStep = !videoSource ? 1 : !analysisResult ? 2 : 3;
@@ -72,6 +77,13 @@ function VideoAnalysis({ apiKey, session }) {
                     setError('Please add your API key in Settings to load YouTube metadata.');
                     return;
                 }
+
+                // If Alpha user without API key, we load without duration and wait for player to report it
+                if (!apiKey && isAlphaUser) {
+                    console.log('Alpha user: loading YouTube without metadata API');
+                    return;
+                }
+
                 const metadata = await fetchYouTubeMetadata(source.videoId, apiKey);
                 setVideoDuration(metadata.duration);
                 setEndTime(metadata.duration);
@@ -82,7 +94,15 @@ function VideoAnalysis({ apiKey, session }) {
                 setError('Failed to load YouTube video info. Make sure the video is public.');
             }
         }
-    }, [apiKey]);
+    }, [apiKey, hasAccess, isAlphaUser]);
+
+    // Handle duration reported by player (fallback for Alpha users)
+    const handleDurationReceived = useCallback((duration) => {
+        if (!videoDuration) {
+            setVideoDuration(duration);
+            setEndTime(duration);
+        }
+    }, [videoDuration]);
 
     // Handle deep linking
     const handleTimestampClick = (seconds) => {
@@ -306,7 +326,11 @@ function VideoAnalysis({ apiKey, session }) {
                             </button>
                         </div>
                         <div className="player-wrapper" ref={playerContainerRef}>
-                            <VideoPlayer ref={videoPlayerRef} videoSource={videoSource} />
+                            <VideoPlayer
+                                ref={videoPlayerRef}
+                                videoSource={videoSource}
+                                onDurationReceived={handleDurationReceived}
+                            />
                         </div>
                     </div>
                     <div className="configure-options">
