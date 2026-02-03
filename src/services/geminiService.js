@@ -1,6 +1,7 @@
 /**
  * Gemini API service for video analysis
  */
+import { supabase } from './supabaseClient';
 
 const API_BASE = 'https://generativelanguage.googleapis.com/v1beta';
 
